@@ -1,0 +1,163 @@
+---
+title: "HIV/AIDS Surveillance Data Analysis"
+author: "Xuan Lu and Team"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: yeti
+    css: style.css
+---
+
+## Project Proposal Summary
+
+### The Team
+- Junjie Hu (jh4617)
+- Ruixi Li (rl33298)
+- Xuan Lu (xl3214)
+- Tianyun Jiang (tj2519)
+- Qinting Shen (qs2261)
+
+### Tentative Project Title
+HIV/AIDS Surveillance Data Analysis across Countries
+
+### Motivation
+The primary goal is to analyze information on HIV prevalence, incidence rates, and AIDS mortality from available studies, identifying the most vulnerable gender, sub-population, and geographic region.
+
+### Intended Final Products
+Multiple dashboards/web pages reflecting the prevalence and incidence rates of HIV across countries and subgroups.
+
+### Anticipated Data Sources
+United States Census’s HIV/AIDS Surveillance Data Base
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Data Cleaning and Preparation
+```{r clean data}
+# Load the dataset (assuming you have already read it into 'hiv_df')
+hiv_df <- read.csv("hiv_joined_data.csv") |>
+  janitor::clean_names()
+
+# View the first few rows of the dataset
+head(hiv_df)
+
+# Display the column names
+colnames(hiv_df)
+
+# Filter data for new HIV incidences and AIDS mortality
+hiv_df_filtered <- hiv_df |>
+    dplyr::select(new_hiv_incidences, aids_mortality, age, gender, sub_population, geographic_region) |>
+    dplyr::filter(!is.na(new_hiv_incidences) & !is.na(aids_mortality))
+
+# Further filter by demographic groups if necessary
+```
+
+## Exploratory Analysis
+```{r EDA}
+# Histogram for new HIV incidences
+ggplot(hiv_df_filtered, aes(x = new_hiv_incidences)) +
+    geom_histogram(binwidth = 1, fill = "blue", color = "black")
+
+# Summary statistics for AIDS mortality
+summary(hiv_df_filtered$aids_mortality)
+```
+
+## Statistical Testing
+```{r Stat Tests}
+# Load necessary libraries
+library(broom)  # For tidy statistical summaries
+
+# Chi-square test for categorical variables (e.g., gender)
+chi_sq_result <- chisq.test(hiv_df_filtered$gender, hiv_df_filtered$new_hiv_incidences)
+print(glue::glue("Chi-Square Test for Gender and New HIV Incidences:\n"))
+print(tidy(chi_sq_result))
+
+# ANOVA for numeric variables (e.g., age)
+aov_result <- aov(aids_mortality ~ age, data = hiv_df_filtered)
+print(glue::glue("\nANOVA for AIDS Mortality by Age:\n"))
+print(tidy(aov_result))
+
+# T-test (e.g., comparing two age groups)
+t_test_result <- t.test(aids_mortality ~ age_group, data = hiv_df_filtered)
+print(glue::glue("\nT-Test for AIDS Mortality by Age Group:\n"))
+print(tidy(t_test_result))
+
+# Regression (e.g., multiple variable regression)
+lm_result <- lm(aids_mortality ~ age + gender + geographic_region, data = hiv_df_filtered)
+print(glue::glue("\nLinear Regression for AIDS Mortality:\n"))
+print(tidy(lm_result))
+```
+
+- Chi-Square Test: Used for testing relationships between categorical variables.
+- ANOVA: Analyzes differences between group means and their associated procedures.
+- T-Test: Compares the means of two groups.
+- Linear Regression: Models the relationship between a dependent variable and one or more independent variables.
+
+### Validation of Data:
+
+- Ensure hiv_df_filtered contains the necessary columns (gender, new_hiv_incidences, aids_mortality, age, age_group, geographic_region).
+- Validate the assumptions for each statistical test (e.g., normality for t-test and ANOVA, independence for Chi-square).
+
+## Visualization
+```{r visualization}
+library(plotly)
+library(ggplot2)
+
+# HIV Incidence Rates by Country - Scattergeo Map
+map_plot <- plot_ly(data = hiv_df_filtered, lat = ~latitude, lon = ~longitude, text = ~country, type = "scattergeo") |>
+            layout(title = 'HIV Incidence Rates by Country',
+                   geo = list(projection = list(type = 'natural earth')))
+
+# HIV Incidence Rates Over Time by Subpopulation - Line Chart
+time_plot <- plot_ly(hiv_df_filtered, x = ~year, y = ~new_hiv_incidences, color = ~sub_population, type = 'scatter', mode = 'lines') |>
+             layout(title = 'HIV Incidence Rates Over Time by Subpopulation')
+
+# Difference in HIV Incidence Rates Across Gender - Bar Chart
+gender_plot <- ggplot(hiv_df_filtered, aes(x = gender, y = new_hiv_incidences)) +
+               geom_bar(stat = "identity", fill = "steelblue") +
+               theme_minimal() +
+               labs(title = 'Difference in HIV Incidence Rates Across Gender')
+
+# HIV Incidence Rates in Capital City vs Rural Area - Bar Chart
+location_plot <- ggplot(hiv_df_filtered, aes(x = location_type, y = new_hiv_incidences)) +
+                 geom_bar(stat = "identity", fill = "coral") +
+                 theme_minimal() +
+                 labs(title = 'HIV Incidence Rates in Capital City vs Rural Area')
+
+# HIV Incidence Rates Across Continents - Bar Chart
+continent_plot <- ggplot(hiv_df_filtered, aes(x = continent, y = new_hiv_incidences)) +
+                  geom_bar(stat = "identity", fill = "lightgreen") +
+                  theme_minimal() +
+                  labs(title = 'HIV Incidence Rates Across Continents')
+
+# Print plots (optional, based on your setup)
+# print(map_plot)
+# print(time_plot)
+# print(gender_plot)
+# print(location_plot)
+# print(continent_plot)
+```
+
+## Tables
+```{r Tables}
+# Load necessary libraries
+library(dplyr)
+library(knitr)
+
+# Table for countries/regions with highest HIV prevalences and incidence rates
+top_countries <- hiv_df_filtered |>
+    group_by(country) |>
+    summarise(Average_Incidence = mean(new_hiv_incidences, na.rm = TRUE)) |>
+    arrange(desc(Average_Incidence)) |>
+    head(n = 10)  # Get top 10 countries
+
+# Display the table with kable for a professional look
+kable(top_countries, caption = "Top 10 Countries/Regions with Highest HIV Incidence Rates", 
+      format = "html", table.attr = "style='width:100%;'", 
+      col.names = c("Country/Region", "Average Incidence Rate"))
+```
+
