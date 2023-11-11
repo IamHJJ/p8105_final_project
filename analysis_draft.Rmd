@@ -50,20 +50,20 @@ colnames(hiv_df)
 
 # Filter data for new HIV incidences and AIDS mortality
 hiv_df_filtered <- hiv_df |>
-    dplyr::select(new_hiv_incidences, aids_mortality, age, gender, sub_population, geographic_region) |>
-    dplyr::filter(!is.na(new_hiv_incidences) & !is.na(aids_mortality))
+  dplyr::filter(!is.na(incidence_rate) & !is.na(num_of_deaths)) |>
+  mutate(num_of_deaths = as.numeric(gsub(",", "", num_of_deaths)))
 
 # Further filter by demographic groups if necessary
 ```
 
 ## Exploratory Analysis
 ```{r EDA}
-# Histogram for new HIV incidences
-ggplot(hiv_df_filtered, aes(x = new_hiv_incidences)) +
+# Histogram for HIV incidences
+ggplot(hiv_df_filtered, aes(x = incidence_rate)) +
     geom_histogram(binwidth = 1, fill = "blue", color = "black")
 
 # Summary statistics for AIDS mortality
-summary(hiv_df_filtered$aids_mortality)
+summary(hiv_df_filtered$num_of_deaths)
 ```
 
 ## Statistical Testing
@@ -72,22 +72,23 @@ summary(hiv_df_filtered$aids_mortality)
 library(broom)  # For tidy statistical summaries
 
 # Chi-square test for categorical variables (e.g., gender)
-chi_sq_result <- chisq.test(hiv_df_filtered$gender, hiv_df_filtered$new_hiv_incidences)
-print(glue::glue("Chi-Square Test for Gender and New HIV Incidences:\n"))
+chi_sq_result <- chisq.test(hiv_df_filtered$sex, hiv_df_filtered$incidence_rate)
+print(glue::glue("Chi-Square Test for Gender and HIV Incidences:\n"))
 print(tidy(chi_sq_result))
 
 # ANOVA for numeric variables (e.g., age)
-aov_result <- aov(aids_mortality ~ age, data = hiv_df_filtered)
+aov_result <- aov(num_of_deaths ~ age, data = hiv_df_filtered)
 print(glue::glue("\nANOVA for AIDS Mortality by Age:\n"))
 print(tidy(aov_result))
 
 # T-test (e.g., comparing two age groups)
-t_test_result <- t.test(aids_mortality ~ age_group, data = hiv_df_filtered)
+# Ensure 'age_group' is a valid variable in your dataset
+t_test_result <- t.test(num_of_deaths ~ age, data = hiv_df_filtered)
 print(glue::glue("\nT-Test for AIDS Mortality by Age Group:\n"))
 print(tidy(t_test_result))
 
 # Regression (e.g., multiple variable regression)
-lm_result <- lm(aids_mortality ~ age + gender + geographic_region, data = hiv_df_filtered)
+lm_result <- lm(num_of_deaths ~ age + sex + geographic_area, data = hiv_df_filtered)
 print(glue::glue("\nLinear Regression for AIDS Mortality:\n"))
 print(tidy(lm_result))
 ```
@@ -107,39 +108,33 @@ print(tidy(lm_result))
 library(plotly)
 library(ggplot2)
 
-# HIV Incidence Rates by Country - Scattergeo Map
-map_plot <- plot_ly(data = hiv_df_filtered, lat = ~latitude, lon = ~longitude, text = ~country, type = "scattergeo") |>
-            layout(title = 'HIV Incidence Rates by Country',
-                   geo = list(projection = list(type = 'natural earth')))
+# HIV Prevalence and Incidence Rates by Country
+country_plot <- plot_ly(data = hiv_df_filtered) |>
+    add_trace(x = ~country, y = ~incidence_rate, name = 'Incidence Rate', type = 'bar') |>
+    add_trace(x = ~country, y = ~prevalence_rate, name = 'Prevalence Rate', type = 'bar') |>
+    layout(title = 'HIV Prevalence and Incidence Rates by Country',
+           barmode = 'group')
 
-# HIV Incidence Rates Over Time by Subpopulation - Line Chart
-time_plot <- plot_ly(hiv_df_filtered, x = ~year, y = ~new_hiv_incidences, color = ~sub_population, type = 'scatter', mode = 'lines') |>
-             layout(title = 'HIV Incidence Rates Over Time by Subpopulation')
+print(country_plot)
 
-# Difference in HIV Incidence Rates Across Gender - Bar Chart
-gender_plot <- ggplot(hiv_df_filtered, aes(x = gender, y = new_hiv_incidences)) +
-               geom_bar(stat = "identity", fill = "steelblue") +
-               theme_minimal() +
-               labs(title = 'Difference in HIV Incidence Rates Across Gender')
 
-# HIV Incidence Rates in Capital City vs Rural Area - Bar Chart
-location_plot <- ggplot(hiv_df_filtered, aes(x = location_type, y = new_hiv_incidences)) +
-                 geom_bar(stat = "identity", fill = "coral") +
-                 theme_minimal() +
-                 labs(title = 'HIV Incidence Rates in Capital City vs Rural Area')
+# HIV Prevalence and Incidence Rates of Each Subpopulation Over Time
+time_subpop_plot <- plot_ly(data = hiv_df_filtered) |>
+    add_trace(x = ~year, y = ~incidence_rate, color = ~population_subgroup, type = 'scatter', mode = 'lines', name = 'Incidence Rate') |>
+    add_trace(x = ~year, y = ~prevalence_rate, color = ~population_subgroup, type = 'scatter', mode = 'lines', name = 'Prevalence Rate') |>
+    layout(title = 'HIV Prevalence and Incidence Rates of Each Subpopulation Over Time')
 
-# HIV Incidence Rates Across Continents - Bar Chart
-continent_plot <- ggplot(hiv_df_filtered, aes(x = continent, y = new_hiv_incidences)) +
-                  geom_bar(stat = "identity", fill = "lightgreen") +
-                  theme_minimal() +
-                  labs(title = 'HIV Incidence Rates Across Continents')
+print(time_subpop_plot)
 
-# Print plots (optional, based on your setup)
-# print(map_plot)
-# print(time_plot)
-# print(gender_plot)
-# print(location_plot)
-# print(continent_plot)
+
+# Difference in HIV Prevalence and Incidence Rates Across Gender
+gender_plot <- ggplot(hiv_df_filtered, aes(x = sex)) +
+    geom_bar(aes(y = incidence_rate, fill = 'Incidence Rate'), stat = 'identity') +
+    geom_bar(aes(y = prevalence_rate, fill = 'Prevalence Rate'), stat = 'identity', position = 'dodge') +
+    theme_minimal() +
+    labs(title = 'Difference in HIV Prevalence and Incidence Rates Across Gender')
+
+print(gender_plot)
 ```
 
 ## Tables
@@ -148,16 +143,21 @@ continent_plot <- ggplot(hiv_df_filtered, aes(x = continent, y = new_hiv_inciden
 library(dplyr)
 library(knitr)
 
-# Table for countries/regions with highest HIV prevalences and incidence rates
+# Top Countries/Regions with Highest HIV Prevalences and Incidence Rates
 top_countries <- hiv_df_filtered |>
-    group_by(country) |>
-    summarise(Average_Incidence = mean(new_hiv_incidences, na.rm = TRUE)) |>
-    arrange(desc(Average_Incidence)) |>
-    head(n = 10)  # Get top 10 countries
+    dplyr::group_by(country) |>
+    dplyr::summarize(
+        Average_Incidence = mean(incidence_rate, na.rm = TRUE),
+        Average_Prevalence = mean(prevalence_rate, na.rm = TRUE)
+    ) |>
+    dplyr::arrange(desc(Average_Incidence), desc(Average_Prevalence)) |>
+    head(10)
 
 # Display the table with kable for a professional look
 kable(top_countries, caption = "Top 10 Countries/Regions with Highest HIV Incidence Rates", 
       format = "html", table.attr = "style='width:100%;'", 
       col.names = c("Country/Region", "Average Incidence Rate"))
+
+unique(hiv_df$age)
 ```
 
