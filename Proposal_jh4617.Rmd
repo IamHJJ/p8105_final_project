@@ -85,7 +85,11 @@ hiv_df =
 
 * Nov. 22 - Nov. 29: Writing the report
 
+<<<<<<< HEAD
 * Nov. 30 - Dec. 8: Shooting video, building website, and project finalization
+=======
+* Nov. 30 - Dec. 8: Shooting video, building website, and project finalization 
+>>>>>>> f5f553ac480262c37ccba63a30c5891ae9faf5d0
 
 
 
