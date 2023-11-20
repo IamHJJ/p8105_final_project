@@ -1,0 +1,66 @@
+---
+title: "NHANES"
+author: "Junjie Hu and team"
+date: "2023-11-20"
+output: github_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, echo = FALSE}
+library(haven)
+library(tidyverse)
+library(purrr)
+
+```
+
+## import NHANES datafiles
+```{r}
+file_list = 
+  list.files(path = "NHANES", full.names = TRUE) 
+
+load_files = function(x){
+  
+  filetype =
+    str_extract(x, "DEMO|HIV")
+  
+  year = 
+    str_extract(x, "(?<=_)[A-Z]")
+  
+data = 
+    read_xpt(x) |>
+    janitor::clean_names()|>
+    mutate(filetype = filetype, year = year)
+    
+}
+
+output = 
+  map(file_list, load_files) 
+```
+
+```{r}
+demo_list =
+  output|>
+  bind_rows() |>
+  filter(filetype == "DEMO") 
+
+hiv_list =
+  output|>
+  bind_rows() |>
+  filter(filetype == "HIV") 
+
+final_df |>
+  left_join(hiv_list, demo_list)
+
+join_by_year_and_id <- function(hiv, demo) {
+  left_join(hiv, demo, by = c("year", "seqn"))  # Assuming 'seqn' is the ID column
+}
+
+# Joining each pair of dataframes in hiv_list and demo_list
+joined_data <- map2(hiv_list, demo_list, join_by_year_and_id)
+
+# Combine all joined dataframes into final_df
+final_df <- bind_rows(joined_data)
+
+```
+
