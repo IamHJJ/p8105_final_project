@@ -8,6 +8,8 @@ output:
     toc_float: true
     theme: yeti
     css: style.css
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Project Proposal Summary
@@ -34,6 +36,17 @@ United States Census’s HIV/AIDS Surveillance Data Base
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+```
+
+
+# high-quality hiv_df
+```{r}
+unique(hiv_df$quality)
+
+high_quality =
+  hiv_df |>
+  filter(quality == "A") 
+write.csv(high_quality, file = "high_quality_df.csv")
 ```
 
 ## Data Cleaning and Preparation
