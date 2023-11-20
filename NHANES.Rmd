@@ -36,8 +36,10 @@ data =
     
 }
 
+
 demo_list_output = 
   map(demo_list, load_files) 
+
 hiv_list_output = 
   map(hiv_list, load_files) 
 
@@ -50,5 +52,21 @@ joined_df =
   map2(hiv_list_output, demo_list_output, ~join_pair(.x, .y))|>
   bind_rows()
 
+```
+
+Speacify `year`
+```{r}
+joined_df = 
+  joined_df |>
+  mutate(year = recode(year, "A" = "1999-2000",
+                       "B" = "2001-2002",
+                       "C" = "2003-2004",
+                       "D" = "2005-2006",
+                       "E" = "2007-2008",
+                       "F" = "2009-2010",
+                       "G" = "2011-2012",
+                       "H" = "2013-2014",
+                       "I" = "2015-2016",
+                       "J" = "2017-2018"))
 ```
 
