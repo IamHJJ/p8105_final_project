@@ -16,8 +16,10 @@ library(purrr)
 
 ## import NHANES datafiles
 ```{r}
-file_list = 
-  list.files(path = "NHANES", full.names = TRUE) 
+demo_list = 
+  list.files(path = "NHANES/DEMO", full.names = TRUE) 
+hiv_list = 
+  list.files(path = "NHANES/HIV", full.names = TRUE) 
 
 load_files = function(x){
   
@@ -34,33 +36,19 @@ data =
     
 }
 
-output = 
-  map(file_list, load_files) 
-```
+demo_list_output = 
+  map(demo_list, load_files) 
+hiv_list_output = 
+  map(hiv_list, load_files) 
 
-```{r}
-demo_list =
-  output|>
-  bind_rows() |>
-  filter(filetype == "DEMO") 
-
-hiv_list =
-  output|>
-  bind_rows() |>
-  filter(filetype == "HIV") 
-
-final_df |>
-  left_join(hiv_list, demo_list)
-
-join_by_year_and_id <- function(hiv, demo) {
-  left_join(hiv, demo, by = c("year", "seqn"))  # Assuming 'seqn' is the ID column
+join_pair = function(df1, df2) {
+  left_join(df1, df2, by = c("seqn", "year"))
 }
 
-# Joining each pair of dataframes in hiv_list and demo_list
-joined_data <- map2(hiv_list, demo_list, join_by_year_and_id)
 
-# Combine all joined dataframes into final_df
-final_df <- bind_rows(joined_data)
+joined_df = 
+  map2(hiv_list_output, demo_list_output, ~join_pair(.x, .y))|>
+  bind_rows()
 
 ```
 
