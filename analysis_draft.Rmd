@@ -39,21 +39,16 @@ library(tidyverse)
 ```
 
 
-# high-quality hiv_df
-```{r}
-unique(hiv_df$quality)
 
-high_quality =
-  hiv_df |>
-  filter(quality == "A") 
-write.csv(high_quality, file = "high_quality_df.csv")
-```
 
 ## Data Cleaning and Preparation
 ```{r clean data}
-# Load the dataset (assuming you have already read it into 'hiv_df')
-hiv_df <- read.csv("hiv_joined_data.csv") |>
-  janitor::clean_names()
+# Load the dataset (assuming you have already read it into 'hiv_df') and delete those obs with missing or unrealistic sample_size.
+
+hiv_df <- read.csv("high_quality_df.csv") |>
+  janitor::clean_names() |>
+  mutate(sample_size = as.numeric(sample_size)) |>
+  filter(sample_size > 0 & !is.na(sample_size) )
 
 # View the first few rows of the dataset
 head(hiv_df)
