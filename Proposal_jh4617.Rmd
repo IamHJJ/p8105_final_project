@@ -9,7 +9,7 @@ output: github_document
 
 Junjie Hu jh4617
 
-Ruixi Li rl33298
+Ruixi Li rl3328
 
 Xuan Lu xl3214
 
