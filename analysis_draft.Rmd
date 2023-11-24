@@ -48,13 +48,15 @@ library(tidyverse)
 
 incidence <- read.csv("surveillance/data/hiv_incidence.csv") |>
   janitor::clean_names() |>
-  select(-c(no_cases,no_deaths,prev_rate))
+  select(-c(no_cases,no_deaths,prev_rate)) |>
+  rename(subpop = subpop)
 
 # prevalence
 
 prevalence <- read.csv("surveillance/data/hiv_prevalence.csv") |>
   janitor::clean_names() |>
-  select(-c(no_cases,no_deaths,inc_rate))
+  select(-c(no_cases,no_deaths,inc_rate))|>
+  rename(subpop = subpop)
 ```
 
 ## Exploratory Analysis
@@ -106,17 +108,37 @@ aov_result <- aov(num_of_deaths ~ age, data = hiv_df_filtered)
 print(glue::glue("\nANOVA for AIDS Mortality by Age:\n"))
 print(tidy(aov_result))
 
-# T-test (e.g., comparing two age groups)
-# Ensure 'age_group' is a valid variable in your dataset
-t_test_result <- t.test(num_of_deaths ~ age, data = hiv_df_filtered)
-print(glue::glue("\nT-Test for AIDS Mortality by Age Group:\n"))
-print(tidy(t_test_result))
+
 
 # Regression (e.g., multiple variable regression)
 lm_result <- lm(num_of_deaths ~ age + sex + geographic_area, data = hiv_df_filtered)
 print(glue::glue("\nLinear Regression for AIDS Mortality:\n"))
 print(tidy(lm_result))
+
+# t test: Difference in HIV incidence rate between the circumcised and uncircumcised 
+
+circumcise = 
+  incidence |>
+  mutate(
+    subpop = recode(subpop,
+                                 'Adults - circumcised' = 'circumcised',
+                                 'Adults - uncircumcised' = 'uncircumcised')) |>
+  filter(subpop %in% c('circumcised','uncircumcised'))
+
+circumcise_plot = circumcise |>
+  plot_ly(x = ~subpop, y = ~inc_rate, type = 'box') |>
+  
+circumcise_plot
+ttest_result = t.test(inc_rate ~ subpop, data = circumcise) |> broom::tidy()
+print(glue::glue("\nT-Test for HIV incidence by circumcision status among adults:\n"))
+print(ttest_result)
+
 ```
+According to the results of ttest, we have sufficient evidence to conclude that there's difference in incidence rate between the circumcised and uncircumcised adults. the uncircumcised adults are more likely to get HIV compared with the circumcised adults.
+
+
+
+
 
 - Chi-Square Test: Used for testing relationships between categorical variables.
 - ANOVA: Analyzes differences between group means and their associated procedures.
@@ -135,62 +157,93 @@ library(ggplot2)
 
 # HIV Prevalence and Incidence Rates by Country
 
-int_country = incidence |>
-  plot_ly(x = ~country, y = ~inc_rate, name = 'Incidence Rate', type = 'bar') |> 
-  layout(title = 'HIV Incidence Rates by Country', barmode = 'group')
-int_country
+inc_country = incidence |>
+  group_by(country) |>
+  summarize(median = median(inc_rate)) |>
+  mutate(country = fct_reorder(country, median)) |>
+  plot_ly(x = ~country, y = ~median, type = 'scatter', mode = 'markers') |> 
+  layout(title = 'HIV Incidence Rates by Country',
+         yaxis = list(title = 'Incidence Rate(%)'))
+inc_country
 
 
 prev_country = prevalence |>
-  plot_ly(x = ~country, y = ~prev_rate, name = 'Incidence Rate', type = 'bar') |> 
-  layout(title = 'HIV Prevalence Rates by Country', barmode = 'group')
+  group_by(country) |>
+  summarize(median = median(prev_rate)) |>
+  mutate(country = fct_reorder(country, median)) |>
+  plot_ly(x = ~country, y = ~median, type = 'scatter', mode = 'markers') |> 
+  layout(title = 'HIV Prevalence Rates by Country',
+         yaxis = list(title = 'Prevalence Rate(%)'))
 prev_country
-
-incidence |>
-  mutate(country = as.factor(country),
-         country = fct_reorder(country, inc_rate)) 
-           plot_ly(x = ~country, y = ~inc_rate, name = 'Incidence Rate', type = 'bar') 
-
-|>
-    add_trace(x = ~country, y = ~prev_rate, name = 'Prevalence Rate', type = 'bar') |>
-    layout(title = 'HIV Prevalence and Incidence Rates by Country',
-           barmode = 'group')
-
-print(country_plot)
 
 
 # HIV Prevalence and Incidence Rates of Each Subpopulation Over Time
+# sexually active, TB, STI : other non-representative
+# pregnant women: other patients
+#sex worker&clients: ?
+
+incidence = incidence |>
+  mutate(
+    subpop_pooled = ifelse(
+     str_detect(subpop, "(?i)police|military"), "Military/Armed Forces",
+     ifelse(
+       str_detect(subpop, "(?i)child|pediatric"), "Children",
+     ifelse(
+       str_detect(subpop, "(?i)drug|IVDU") & !str_detect(subpop, "(?i)STI|homo|prisoner|partner|sex worker"),  "Intravenous Drug Users/Needle Sharers",
+     ifelse(
+       str_detect(subpop, "(?i)sex worker|bar") & !str_detect(subpop,"(?i)trans|IVDU|homo|MSM|drug|client"),"Sex workers",
+     ifelse(
+       str_detect(subpop, "(?i)transgender|homo|MSM|gay|TB|STI|sexually|prisoner|infants born|HIV2+|high risk") & !str_detect(subpop, "(?i)sex worker|IVDU|drug|Testing center attendees"), "Other Non-Representative",
+      ifelse(
+       str_detect(subpop, "(?i)pts.|pregnant|Mothers") & !str_detect(subpop, "(?i)sex worker|IVDU|STI|homo|TB"), "Other Patients",
+      ifelse(
+       str_detect(subpop, "(?i)Blood|port|Testing center attendees|employer|contractor") , "Genereal Population","Two Known Mixed Groups"))))))))
+
+#unique(incidence$subpop[str_detect(incidence$subpop,"patient")]) for categorization
+
+incidence = incidence |>
+  mutate(subpop_pooled = ifelse(subpop %in% c("Bisexuals","Clients of sex workers","High risk individuals","Partners of HIV+ individuals","Spouses of HIV+ individuals"),"Other Non-Representative",subpop_pooled),
+         subpop_pooled = ifelse(subpop == "Sex workers & clients","Sex workers",subpop_pooled),
+         subpop_pooled = ifelse(subpop %in% c("Heterosexuals","Adults","Individuals","Women","Various groups","Residents","Unspecified population","HIV- individuals"),"Other Non-Representative",subpop_pooled))
 
 
-incidence |>
-  group_by(sex) |>
-  ggplot(aes(x = a, color = sex)) + geom_histogram(alpha=0.5)
-incidence |>
-  group_by(sex) |>
-  summarize(median=median(inc_rate),iqr=IQR(inc_rate))
+check=incidence |>
+  filter(subpop_pooled != "Two Known Mixed Groups") |>
+  group_by(subpop_pooled,subpop) |>
+  summarise(n=n())
+  
+incidence|>
+  filter(subpop_pooled == "Two Known Mixed Groups") 
+     
+ 
 
-circumcise_plot = 
-  incidence |>
-  filter(population_subgroup %in% c('Adults - circumcised','Adults - uncircumcised')) |>
-  group_by(population_subgroup) |>
-  summarize(median=median(inc_rate),iqr=IQR(inc_rate), n=n()) |>
-  ggplot(aes(x = ))
+
+
 time_subpop_plot <- plot_ly(data = hiv_df_filtered) |>
-    add_trace(x = ~year, y = ~inc_rate, color = ~population_subgroup, type = 'scatter', mode = 'lines', name = 'Incidence Rate') |>
-    add_trace(x = ~year, y = ~prev_rate, color = ~population_subgroup, type = 'scatter', mode = 'lines', name = 'Prevalence Rate') |>
+    add_trace(x = ~year, y = ~inc_rate, color = ~subpop, type = 'scatter', mode = 'lines', name = 'Incidence Rate') |>
+    add_trace(x = ~year, y = ~prev_rate, color = ~subpop, type = 'scatter', mode = 'lines', name = 'Prevalence Rate') |>
     layout(title = 'HIV Prevalence and Incidence Rates of Each Subpopulation Over Time')
 
 print(time_subpop_plot)
 
 
 # Difference in HIV Prevalence and Incidence Rates Across Gender
-gender_plot <- ggplot(hiv_df_filtered, aes(x = sex)) +
-    geom_bar(aes(y = inc_rate, fill = 'Incidence Rate'), stat = 'identity') +
-    geom_bar(aes(y = prev_rate, fill = 'Prevalence Rate'), stat = 'identity', position = 'dodge') +
-    theme_minimal() +
-    labs(title = 'Difference in HIV Prevalence and Incidence Rates Across Gender')
+prev_sex = prevalence |>
+  group_by(sex) |>
+  summarize(median=median(prev_rate), n = n()) |>
+  mutate(text_label = str_c("Sex:", sex, " \nMedian:", median, " Sample Size:", n))
 
-print(gender_plot)
+sex_plot = incidence |>
+  group_by(sex) |>
+  summarise(median = median(inc_rate), n = n()) |>
+  mutate(text_label = str_c("Sex:", sex, " \nMedian:", median, " Sample Size:", n)) |>
+  plot_ly(x = ~sex, y = ~median, size = ~n, type = 'scatter', mode = 'markers', name = 'Incidence Rate',text = ~text_label, hoverinfo = 'text') |>
+  add_trace(data = prev_sex, x = ~sex, y = ~median, size = ~n, type = 'scatter', name = 'Prevalence Rate',text = ~text_label, hoverinfo = 'text') |>
+  layout(title = 'Median Incidence and Prevalence Rates by Sex',
+         xaxis = list(title = 'Sex'),
+         yaxis = list(title = 'Median Rate'))
+
+print(sex_plot)
 ```
 
 ## Tables
