@@ -56,15 +56,12 @@ joined_df =
 
 Re-coded variables of interest:
 ```{r}
-joined_df = 
+cleaned_joined_df = 
   joined_df |>
+  filter(ridageyr >= 18 & ridageyr <= 49) |>
   mutate(hiv = case_when(
     lbdhi == 1 | lbxhivc == 1 ~ 1,
     lbdhi == 2 | lbxhivc == 2 ~ 2)) |> 
-  mutate(income = case_when(
-    year == c("A","B","C","D") ~ indhhinc,
-    year == c("E","F","G","H","I","J") ~ indhhin2
-  )) |>
   mutate(year = recode(year, 
                        "A" = "1999-2000",
                        "B" = "2001-2002",
@@ -105,24 +102,7 @@ joined_df =
                            "5" = "Never married",
                            "6" = "Living with partner",
                            "77" = NA_character_,
-                           "99" = NA_character_),
-         income = recode(income,
-                         "1" = "$ 0 to $ 4,999",
-                         "2" = "$ 5,000 to $ 9,999",
-                         "3" = "$10,000 to $14,999",
-                         "4" = "$15,000 to $19,999",
-                         "5" = "$20,000 to $24,999",
-                         "6" = "$25,000 to $34,999",
-                         "7" = "$35,000 to $44,999",
-                         "8" = "$45,000 to $54,999",
-                         "9" = "$55,000 to $64,999",
-                         "10" = "$65,000 to $74,999",
-                         "12" = NA_character_,
-                         "13" = NA_character_,
-                         "14" = "$75,000 to $99,999",
-                         "15" = "$100,000 and over",
-                         "77" = NA_character_,
-                         "99" = NA_character_)) |>
-  select(seqn, hiv, age, gender, race, education, income, marriage, year)
+                           "99" = NA_character_)) |>
+  select(seqn, hiv, age, gender, race, education, marriage, year)
 ```
 
