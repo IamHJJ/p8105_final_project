@@ -15,16 +15,21 @@ library(purrr)
 ```
 
 ## import NHANES datafiles
+
+Imported demographic, HIV test, and sexual behavior dataframes 1999 - 2016. 
 ```{r}
 demo_list = 
   list.files(path = "NHANES/DEMO", full.names = TRUE) 
 hiv_list = 
   list.files(path = "NHANES/HIV", full.names = TRUE) 
+sxq_list = 
+  list.files(path = "NHANES/SXQ", full.names = TRUE) 
+
 
 load_files = function(x){
   
   filetype =
-    str_extract(x, "DEMO|HIV")
+    str_extract(x, "DEMO|HIV|SXQ")
   
   year = 
     str_extract(x, "(?<=_)[A-Z]")
@@ -43,25 +48,41 @@ demo_list_output =
 hiv_list_output = 
   map(hiv_list, load_files) 
 
+sxq_list_output = 
+  map(sxq_list, load_files)
+
 join_pair = function(df1, df2) {
   left_join(df1, df2, by = c("seqn", "year"))
 }
 
 
-joined_df = 
-  map2(hiv_list_output, demo_list_output, ~join_pair(.x, .y))|>
+hiv_demo_list = 
+  map2(hiv_list_output, demo_list_output, ~join_pair(.x, .y))
+  
+hiv_demo_sxq_df = 
+  map2(hiv_demo_list, sxq_list_output, ~join_pair(.x, .y)) |>
   bind_rows() 
 
 ```
 
 Re-coded variables of interest:
+Restricted particpants's age between 20 and 49
 ```{r}
 cleaned_joined_df = 
-  joined_df |>
-  filter(ridageyr >= 18 & ridageyr <= 49) |>
+  hiv_demo_sxq_df |>
+  filter(ridageyr >= 20 & ridageyr <= 49) |>
   mutate(hiv = case_when(
     lbdhi == 1 | lbxhivc == 1 ~ 1,
-    lbdhi == 2 | lbxhivc == 2 ~ 2)) |> 
+    lbdhi == 2 | lbxhivc == 2 ~ 2)
+    )|> 
+  mutate(MSM = case_when(
+    year %in% c("A","B","C") ~ sxq220,
+    year %in% c("D","E","F","G","H","I") ~ sxq550)
+    )|>
+   mutate(WSW = case_when(
+    year %in% c("A","B","C") ~ sxq150,
+    year %in% c("D","E","F","G","H","I") ~ sxq490)
+    )|>
   mutate(year = recode(year, 
                        "A" = "1999-2000",
                        "B" = "2001-2002",
@@ -71,8 +92,7 @@ cleaned_joined_df =
                        "F" = "2009-2010",
                        "G" = "2011-2012",
                        "H" = "2013-2014",
-                       "I" = "2015-2016",
-                       "J" = "2017-2018"),
+                       "I" = "2015-2016"),
          hiv = recode(hiv,
                             "1" = "Reactive",
                             "2" = "Non-reactive"),
@@ -102,7 +122,18 @@ cleaned_joined_df =
                            "5" = "Never married",
                            "6" = "Living with partner",
                            "77" = NA_character_,
-                           "99" = NA_character_)) |>
-  select(seqn, hiv, age, gender, race, education, marriage, year)
+                           "99" = NA_character_)
+         ) |>
+  mutate(samesexcontact = case_when(
+    (MSM %in% c(0, 7777, 77777,9999, 99999) | WSW %in% c(0, 7777, 77777, 9999, 99999)) ~ 0,
+    (MSM >= 1 & MSM <= 600) | (WSW >= 1 & WSW <= 600) ~ 1
+  )) |>
+  select(seqn, hiv, age, gender, race, education, marriage, year, samesexcontact)
+```
+
+```{r}
+cleaned_joined_df |>
+  group_by(samesexcontact, hiv) |>
+  summarize(n = n())
 ```
 
