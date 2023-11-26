@@ -11,6 +11,7 @@ editor_options:
 library(haven)
 library(tidyverse)
 library(purrr)
+library(plotly)
 
 ```
 
@@ -135,5 +136,23 @@ cleaned_joined_df =
 cleaned_joined_df |>
   group_by(samesexcontact, hiv) |>
   summarize(n = n())
+```
+
+Visualization
+```{r}
+cleaned_joined_df %>% 
+  filter(hiv == "Reactive") %>% 
+  group_by(race, gender) %>%
+  summarize(n = n(), age_mean = round(mean(age), 2)) %>% 
+  ungroup() %>% 
+  mutate(race = fct_reorder(race, n)) %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~race, y = ~n, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Race"),
+      yaxis = list(title = "Total Number of HIV Positive Patients"),
+      title = "The Total Number of HIV Positive Patients from 1999 to 2016 Across Races"
+    )
+  
 ```
 
