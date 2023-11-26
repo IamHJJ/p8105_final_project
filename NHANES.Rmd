@@ -50,15 +50,19 @@ join_pair = function(df1, df2) {
 
 joined_df = 
   map2(hiv_list_output, demo_list_output, ~join_pair(.x, .y))|>
-  bind_rows()
+  bind_rows() 
 
 ```
 
-Speacify `year`
+Re-coded variables of interest:
 ```{r}
 joined_df = 
   joined_df |>
-  mutate(year = recode(year, "A" = "1999-2000",
+  mutate(hiv = case_when(
+    lbdhi == 1 | lbxhivc == 1 ~ 1,
+    lbdhi == 2 | lbxhivc == 2 ~ 2)) |>
+  mutate(year = recode(year, 
+                       "A" = "1999-2000",
                        "B" = "2001-2002",
                        "C" = "2003-2004",
                        "D" = "2005-2006",
@@ -67,6 +71,55 @@ joined_df =
                        "G" = "2011-2012",
                        "H" = "2013-2014",
                        "I" = "2015-2016",
-                       "J" = "2017-2018"))
+                       "J" = "2017-2018"),
+         hiv = recode(hiv,
+                            "1" = "Reactive",
+                            "2" = "Non-reactive"),
+         gender = recode(riagendr, 
+                         "1" = "Male",
+                         "2" = "Female"),
+         age = ridageyr,
+         race = recode(ridreth1,
+                       "1" = "Mexican American",
+                       "2" = "Other Hispanic",
+                       "3" = "Non-Hispanic White",
+                       "4" = "Non-Hispanic Black",
+                       "5" = "Other Race - Including Multi-Racial"),
+         education = recode(dmdeduc2,
+                            "1" = "Less than 9th grade",
+                            "2" = "9-11th grade",
+                            "3" = "High school graduate or equivalent",
+                            "4" = "Some college or AA degree",
+                            "5" = "College graduate or above",
+                            "7" = NA_character_,
+                            "9" = NA_character_),
+         marriage = recode(dmdmartl,
+                           "1" = "Married", 
+                           "2" = "Widowed",
+                           "3" = "Divorced",
+                           "4" = "Separated",
+                           "5" = "Never married",
+                           "6" = "Living with partner",
+                           "77" = NA_character_,
+                           "99" = NA_character_),
+         income = recode(indhhin2,
+                         "1" = "$ 0 to $ 4,999",
+                         "2" = "$ 5,000 to $ 9,999",
+                         "3" = "$10,000 to $14,999",
+                         "4" = "$15,000 to $19,999",
+                         "5" = "$20,000 to $24,999",
+                         "6" = "$25,000 to $34,999",
+                         "7" = "$35,000 to $44,999",
+                         "8" = "$45,000 to $54,999",
+                         "9" = "$55,000 to $64,999",
+                         "10" = "$65,000 to $74,999",
+                         "12" = NA_character_,
+                         "13" = NA_character_,
+                         "14" = "$75,000 to $99,999",
+                         "15" = "$100,000 and over",
+                         "77" = NA_character_,
+                         "99" = NA_character_)
+         ) |>
+  select(seqn, hiv, age, gender, race, education, income, marriage, year)
 ```
 
