@@ -156,3 +156,23 @@ cleaned_joined_df %>%
   
 ```
 
+
+```{r}
+cleaned_joined_df %>% 
+   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
+    ) %>% 
+  group_by(race, gender) %>%
+  summarize(total_par = n(), age_mean = round(mean(age), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(race = fct_reorder(race, hiv_percent)) %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~race, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Race"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Races"
+    )
+```
+
+
