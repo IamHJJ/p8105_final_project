@@ -12,6 +12,7 @@ library(haven)
 library(tidyverse)
 library(purrr)
 library(plotly)
+library(modelr)
 
 ```
 
@@ -285,7 +286,7 @@ test `samesexcontact`, `gender`, `age`
 ```{r}
 fit_alt|> 
   broom::tidy() |> 
-  mutate(OR = round(exp(estimate), 2)) |> 
+  mutate(OR = exp(estimate)) |> 
   select(term, estimate, OR, p.value)
 ```
 * `samesexcontact`, `gender`, `age` are all significant
@@ -328,7 +329,7 @@ fit_regression = cleaned_regression_df |>
 
 fit_regression|> 
   broom::tidy() |> 
-  mutate(OR = round(exp(estimate), 3)) |> 
+  mutate(OR = exp(estimate)) |> 
   select(term, estimate, OR, p.value)|> 
   knitr::kable(digits = 3)
 ```
@@ -336,5 +337,47 @@ fit_regression|>
 * Interpretation of results:
 
 
+## Bootstrap
+
+```{r}
+bootstrap_df =
+  cleaned_regression_df |> 
+  bootstrap(n = 500) |> 
+  mutate(
+    models = map(.x = strap, ~glm(hiv_outcome ~ samesexcontact + gender + age + race + marriage, data = .x, family = binomial()) ),
+    results = map(models, broom::tidy)) |> 
+  select(-strap, -models) |> 
+  unnest(results) |> 
+  group_by(term) |> 
+  mutate(OR = exp(estimate))
+```
 
 
+Look at the distribution of estimates under repeated sampling
+```{r}
+bootstrap_df|> 
+  filter(term == "age") |> 
+  ggplot(aes(x = estimate))+
+  geom_density() +
+  facet_wrap(.~ term)  
+    
+bootstrap_df|> 
+  filter(term != "age") |> 
+  ggplot(aes(x = estimate))+
+  geom_density() +
+  facet_wrap(.~ term)
+```
+
+* This is the uncertainty that we would get in this dataset if we do repeated sampling
+
+
+Compute bootstrap mean OR and 95% CI 
+```{r}
+bootstrap_df|> 
+  summarize(
+    mean_OR = mean(OR),
+    CI_lower = quantile(OR, 0.025),
+    CI_upper = quantile(OR, 0.975)
+    )|> 
+  knitr::kable(digits = 3)
+```
