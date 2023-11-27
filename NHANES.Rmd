@@ -138,7 +138,8 @@ cleaned_joined_df |>
   summarize(n = n())
 ```
 
-Visualization
+Visualization - 1
+Total number as y-axis value
 ```{r}
 cleaned_joined_df %>% 
   filter(hiv == "Reactive") %>% 
@@ -156,7 +157,8 @@ cleaned_joined_df %>%
   
 ```
 
-
+Visualization - 1-1
+Total percent as y-axis value
 ```{r}
 cleaned_joined_df %>% 
    mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
@@ -173,6 +175,25 @@ cleaned_joined_df %>%
       yaxis = list(title = "Total Percent of HIV Positive Patients"),
       title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Races"
     )
+```
+
+Visualization 2: by year 
+```{r}
+cleaned_joined_df %>% 
+  mutate(hiv = ifelse(is.na(hiv), "NA", hiv)) %>% 
+  group_by(year, gender) %>% 
+  summarize(age_mean = round(mean(age), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~year, y = ~hiv_percent, color = ~gender, type = "scatter", mode = "lines+markers",
+          text = ~text_label, colors = "viridis") %>% 
+  layout(
+      xaxis = list(title = "Year"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016"
+    )
+  
 ```
 
 
