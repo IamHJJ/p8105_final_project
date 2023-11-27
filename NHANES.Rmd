@@ -140,6 +140,7 @@ cleaned_joined_df |>
 
 Visualization - 1
 Total number as y-axis value
+Across race
 ```{r}
 cleaned_joined_df %>% 
   filter(hiv == "Reactive") %>% 
@@ -196,4 +197,36 @@ cleaned_joined_df %>%
   
 ```
 
+Visualization 3: 
+Across Education level
+```{r}
+cleaned_joined_df %>% 
+   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
+    ) %>% 
+  group_by(education, gender) %>%
+  summarize(total_par = n(), age_mean = round(mean(age), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", 
+                                         "High school graduate or equivalent", 
+                                         "Some college or AA degree",
+                                         "College graduate or above"))) %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~education, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Education level"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Education Level"
+    )
+```
+
+
+Visualization 4: 
+Across marital status
+```{r}
+cleaned_joined_df %>% 
+   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
+    ) %>% 
+  
+```
 
