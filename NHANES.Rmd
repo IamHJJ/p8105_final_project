@@ -261,3 +261,80 @@ cleaned_joined_df %>%
 ```
 
 
+## logistic regression
+
+set the reference group
+```{r}
+cleaned_regression_df= 
+   cleaned_joined_df |> 
+   mutate(
+      hiv_outcome = ifelse(hiv == "Reactive", 1, ifelse(hiv == "Non-reactive", 0, NA)),
+      education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", "High school graduate or equivalent", "Some college or AA degree", "College graduate or above")),
+      race = forcats::fct_relevel(race, c("Non-Hispanic White", "Mexican American", "Non-Hispanic Black", "Other Hispanic", "Other Race - Including Multi-Racial")),
+      marriage = forcats::fct_relevel(marriage, c("Married", "Widowed", "Divorced", "Separated", "Never married", "Living with partner"))
+         )
+```
+
+This is the full model
+```{r}
+fit_alt = cleaned_regression_df |> 
+  glm(hiv_outcome ~ samesexcontact + gender + age + race + education + marriage, data = _, family = binomial())
+```
+
+test `samesexcontact`, `gender`, `age`
+```{r}
+fit_alt|> 
+  broom::tidy() |> 
+  mutate(OR = round(exp(estimate), 2)) |> 
+  select(term, estimate, OR, p.value)
+```
+* `samesexcontact`, `gender`, `age` are all significant
+
+test whether `race` is significant
+```{r}
+fit_no_race = 
+  glm(hiv_outcome ~ samesexcontact + gender + age + education + marriage, data = na.omit(cleaned_regression_df), family = binomial())
+
+anova(fit_no_race, fit_alt, test = 'LRT') |> broom::tidy()
+  
+```
+* p = 0.00, `race` is significant
+
+
+test whether `education` is significant
+```{r}
+fit_no_education = 
+  glm(hiv_outcome ~ samesexcontact + gender + age + race + marriage, data = na.omit(cleaned_regression_df), family = binomial())
+
+anova(fit_no_education, fit_alt, test = 'LRT') |> broom::tidy()
+```
+* p = 0.227, `education` is not significant
+
+test whether `marriage` is significant
+```{r}
+fit_no_marriage = 
+  glm(hiv_outcome ~ samesexcontact + gender + age + race + education, data = na.omit(cleaned_regression_df), family = binomial())
+
+anova(fit_no_marriage, fit_alt, test = 'LRT') |> broom::tidy()
+```
+* p = 0.017, `marriage` is significant
+* Therefore, the final model include `samesexcontact`, `gender`, `age`, `race`, `marriage`
+
+
+The final model
+```{r}
+fit_regression = cleaned_regression_df |> 
+  glm(hiv_outcome ~ samesexcontact + gender + age + race + marriage, data = _, family = binomial()) 
+
+fit_regression|> 
+  broom::tidy() |> 
+  mutate(OR = round(exp(estimate), 3)) |> 
+  select(term, estimate, OR, p.value)|> 
+  knitr::kable(digits = 3)
+```
+
+* Interpretation of results:
+
+
+
+
