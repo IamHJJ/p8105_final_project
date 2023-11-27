@@ -226,7 +226,7 @@ Across marital status
 ```{r}
 cleaned_joined_df %>% 
    mutate(hiv = ifelse(is.na(hiv), "NA", hiv)) %>% 
-  group_by(, gender) %>%
+  group_by(marriage, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
   ungroup() %>% 
@@ -259,4 +259,5 @@ cleaned_joined_df %>%
       title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Sexual Behavior"
     )
 ```
+
 
