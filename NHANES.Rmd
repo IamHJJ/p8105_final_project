@@ -2,7 +2,7 @@
 title: "NHANES"
 author: "Junjie Hu and team"
 date: "2023-11-20"
-output: github_document
+output: html_document
 editor_options: 
   chunk_output_type: inline
 ---
