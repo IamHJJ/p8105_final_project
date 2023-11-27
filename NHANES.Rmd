@@ -227,6 +227,23 @@ Across marital status
 cleaned_joined_df %>% 
    mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
     ) %>% 
-  
+  group_by(marriage, gender) %>%
+  summarize(total_par = n(), age_mean = round(mean(age), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(marriage = fct_reorder(marriage, hiv_percent)) %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~marriage, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Marital Status"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Marital Status"
+    )
+```
+
+
+Visualization 5: 
+```{r}
+
 ```
 
