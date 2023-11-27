@@ -225,9 +225,8 @@ Visualization 4:
 Across marital status
 ```{r}
 cleaned_joined_df %>% 
-   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
-    ) %>% 
-  group_by(marriage, gender) %>%
+   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)) %>% 
+  group_by(, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
   ungroup() %>% 
@@ -242,8 +241,22 @@ cleaned_joined_df %>%
 ```
 
 
-Visualization 5: 
+Visualization 5: Sexual behavior
 ```{r}
-
+cleaned_joined_df %>% 
+   mutate(hiv = ifelse(is.na(hiv), "NA", hiv),
+          samesexcontact = recode(samesexcontact, "0" = "No", 
+                                  "1" = "Yes")) %>% 
+  group_by(samesexcontact, gender) %>% 
+  summarize(total_par = n(), age_mean = round(mean(age), 2), hiv_num = sum(hiv == "Reactive"),
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>% 
+  ungroup() %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Same Sex Sexual Behavior"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Sexual Behavior"
+    )
 ```
 
