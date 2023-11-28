@@ -327,7 +327,7 @@ cleaned_joined_df %>%
 Visualization 9: by year, stratified by Sexual behavior
 ```{r}
 cleaned_joined_df %>% 
-  drop_na(hiv) %>% 
+  drop_na(hiv, samesexcontact) %>% 
   mutate(samesexcontact = recode(samesexcontact, "0" = "No", 
                                   "1" = "Yes")) %>% 
   group_by(year, samesexcontact) %>% 
