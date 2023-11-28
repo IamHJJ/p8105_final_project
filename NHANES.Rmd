@@ -163,8 +163,7 @@ Visualization - 1-1
 Total percent as y-axis value
 ```{r}
 cleaned_joined_df %>% 
-   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
-    ) %>% 
+  drop_na(hiv) %>% 
   group_by(race, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
@@ -182,7 +181,7 @@ cleaned_joined_df %>%
 Visualization 2: by year 
 ```{r}
 cleaned_joined_df %>% 
-  mutate(hiv = ifelse(is.na(hiv), "NA", hiv)) %>% 
+  drop_na(hiv) %>% 
   group_by(year, gender) %>% 
   summarize(age_mean = round(mean(age), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
@@ -202,8 +201,7 @@ Visualization 3:
 Across Education level
 ```{r}
 cleaned_joined_df %>% 
-   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)
-    ) %>% 
+  drop_na(hiv) %>% 
   group_by(education, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
@@ -226,7 +224,7 @@ Visualization 4:
 Across marital status
 ```{r}
 cleaned_joined_df %>% 
-   mutate(hiv = ifelse(is.na(hiv), "NA", hiv)) %>% 
+  drop_na(hiv) %>% 
   group_by(marriage, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
@@ -244,9 +242,9 @@ cleaned_joined_df %>%
 
 Visualization 5: Sexual behavior
 ```{r}
-cleaned_joined_df %>% 
-   mutate(hiv = ifelse(is.na(hiv), "NA", hiv),
-          samesexcontact = recode(samesexcontact, "0" = "No", 
+cleaned_joined_df %>%
+  drop_na(hiv) %>% 
+  mutate(samesexcontact = recode(samesexcontact, "0" = "No", 
                                   "1" = "Yes")) %>% 
   group_by(samesexcontact, gender) %>% 
   summarize(total_par = n(), age_mean = round(mean(age), 2), hiv_num = sum(hiv == "Reactive"),
