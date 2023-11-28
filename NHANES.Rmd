@@ -166,7 +166,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(race, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(race = fct_reorder(race, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
@@ -184,7 +184,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(year, gender) %>% 
   summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~gender, type = "scatter", mode = "lines+markers",
@@ -204,7 +204,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(education, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", 
                                          "High school graduate or equivalent", 
@@ -227,7 +227,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(marriage, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(marriage = fct_reorder(marriage, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
@@ -248,7 +248,7 @@ cleaned_joined_df %>%
                                   "1" = "Yes")) %>% 
   group_by(samesexcontact, gender) %>% 
   summarize(total_par = n(), age_mean = round(mean(age), 2), hiv_num = sum(hiv == "Reactive"),
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>% 
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>% 
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
   plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
@@ -265,7 +265,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(year, education) %>% 
   summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", 
                                          "High school graduate or equivalent", 
@@ -289,7 +289,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(year, race) %>% 
   summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(race = fct_reorder(race, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
@@ -307,10 +307,10 @@ cleaned_joined_df %>%
 Visualization 8: by year, stratified by marital status
 ```{r}
 cleaned_joined_df %>% 
-  drop_na(hiv) %>% 
+  drop_na(hiv, marriage) %>% 
   group_by(year, marriage) %>% 
   summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~marriage, type = "scatter", mode = "lines+markers",
@@ -332,7 +332,7 @@ cleaned_joined_df %>%
                                   "1" = "Yes")) %>% 
   group_by(year, samesexcontact) %>% 
   summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean)) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~samesexcontact, type = "scatter", mode = "lines+markers",
@@ -343,6 +343,66 @@ cleaned_joined_df %>%
       title = "The Total Percent of HIV Positive Patients from 1999 to 2016 by Sexual Behavior"
     )
 ```
+
+
+
+# Visualization - Using function
+## Prepare a new dataset only for Visualization
+```{r}
+cleaned_df_visual = 
+  cleaned_joined_df %>% 
+  drop_na(hiv) %>% 
+  mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", "High school graduate or equivalent", "Some college or AA degree", "College graduate or above")),
+         samesexcontact = recode(samesexcontact, "0" = "No", 
+                                  "1" = "Yes")
+  )
+
+cleaned_df_visual %>% 
+  group_by(education, gender) %>%
+  summarize(total_par = n(), age_mean = round(mean(age), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv == "Reactive", hiv != "Reactive") * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+  plot_ly(x = ~education, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Race"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Races"
+    )
+
+```
+
+
+## Write a function to draw bar plots
+```{r}
+draw_bar_plots = function(df, a) {
+  df %>% 
+    group_by(!!sym(a), gender) %>%
+    summarize(
+      total_par = n(),
+      age_mean = round(mean(age), 2),
+      hiv_percent = round(sum(hiv == "Reactive") / sum(hiv) * 100, 3)
+    ) %>%
+    ungroup() %>% 
+    mutate(text_label = str_c("mean age: ", age_mean)) %>% 
+    plot_ly(x = ~!!a, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") %>% 
+    layout(
+      xaxis = list(title = "Race"),
+      yaxis = list(title = "Total Percent of HIV Positive Patients"),
+      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 Across Races"
+    )
+}
+
+draw_bar_plots(cleaned_df_visual, "education")
+```
+
+
+
+
+
+
+
+
 
 
 
