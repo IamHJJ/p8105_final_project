@@ -204,7 +204,7 @@ cleaned_joined_df %>%
   drop_na(hiv) %>% 
   group_by(education, gender) %>%
   summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", 
                                          "High school graduate or equivalent", 
@@ -381,7 +381,7 @@ draw_bar_plots = function(df, a) {
     summarize(
       total_par = n(),
       age_mean = round(mean(age), 2),
-      hiv_percent = round(sum(hiv == "Reactive") / sum(hiv) * 100, 3)
+      hiv_percent = round(sum(hiv == "Reactive") / sum(hiv == "Reactive", hiv != "Reactive") * 100, 3)
     ) %>%
     ungroup() %>% 
     mutate(text_label = str_c("mean age: ", age_mean)) %>% 
@@ -397,6 +397,10 @@ draw_bar_plots(cleaned_df_visual, "education")
 ```
 
 
+## Loop
+```{r}
+
+```
 
 
 
