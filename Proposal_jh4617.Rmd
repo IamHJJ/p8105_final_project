@@ -35,13 +35,6 @@ Multiple dashboards/web pages reflect the prevalence and incidence rates of HIV 
 
 United States Census’s HIV/AIDS Surveillance Data Base
 
-```{r}
-library(tidyverse)
-hiv_df = 
-  read.csv("hiv_joined_data.csv") |>
-  janitor::clean_names() 
-```
-
 
 ## Planned analyses 
 

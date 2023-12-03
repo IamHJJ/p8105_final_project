@@ -7,7 +7,7 @@ Junjie Hu
 
 Junjie Hu jh4617
 
-Ruixi Li rl33298
+Ruixi Li rl3328
 
 Xuan Lu xl3214
 
@@ -34,27 +34,6 @@ of HIV across countries and subgroups.
 ## The anticipated data sources
 
 United States Census’s HIV/AIDS Surveillance Data Base
-
-``` r
-library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.3     ✔ readr     2.1.4
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-    ## ✔ purrr     1.0.2     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-``` r
-hiv_df = 
-  read.csv("hiv_joined_data.csv") |>
-  janitor::clean_names() 
-```
 
 ## Planned analyses
 
@@ -104,5 +83,7 @@ hiv_df =
 
 - Nov. 22 - Nov. 29: Writing the report
 
-- Nov. 30 - Dec. 8: Shooting video, building website, and project
-  finalization
+\<\<\<\<\<\<\< HEAD \* Nov. 30 - Dec. 8: Shooting video, building
+website, and project finalization ======= \* Nov. 30 - Dec. 8: Shooting
+video, building website, and project finalization \>\>\>\>\>\>\>
+f5f553ac480262c37ccba63a30c5891ae9faf5d0
