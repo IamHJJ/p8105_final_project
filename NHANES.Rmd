@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-```{r setup, echo = FALSE}
+```{r setup, echo = FALSE, message = FALSE}
 library(haven)
 library(tidyverse)
 library(purrr)
@@ -348,7 +348,7 @@ cleaned_joined_df %>%
 
 ## logistic regression
 
-set the reference group
+### Set the reference group
 ```{r}
 cleaned_regression_df= 
    cleaned_joined_df |> 
@@ -360,27 +360,28 @@ cleaned_regression_df=
          )
 ```
 
-Bivariate analysis
+### Bivariate analysis
 ```{r}
-variables = c("age","gender","race","samesexcontact","marriage")
+variables = c("age","gender","education","race","samesexcontact","marriage")
 
 fit_and_summarize <- function(var) {
-  model = lm(as.formula(paste("hiv_outcome~", var)), data = cleaned_regression_df) |>
+  model = glm(as.formula(paste("hiv_outcome~", var)), data = cleaned_regression_df, family = binomial()) |>
   broom::tidy()
 }
 
 model_summaries = 
   map(variables, fit_and_summarize) |>
   bind_rows() |>
-  filter(p.value <= 0.05 & term != "(Intercept)")
+  filter(p.value <= 0.008 & term != "(Intercept)")
 
 model_summaries |>
   select(term, estimate, p.value) |>
   knitr::kable(digits = 3)
 ```
-Variables `age`, `gender`, `race`, `samesexcontact`, `marriage` were found significant associated with HIV infection status, at 5% level of significance. Therefore, these variables were included to the final model.
+Because I am conducting 6 logistic tests, the Bonferroni-corrected significance level would be 0.05/6 = 0.008. Variables `age`, `gender`, `race`, `samesexcontact`, `marriage` were found significant associated with HIV infection status, at 0.8% level of significance. Therefore, these variables were included to the final model.
 
-The final model
+
+### The final model
 ```{r}
 fit_regression = cleaned_regression_df |> 
   glm(hiv_outcome ~ samesexcontact + gender + age + race + marriage, data = _, family = binomial()) 
@@ -391,13 +392,20 @@ fit_regression|>
   select(term, estimate, OR, p.value)|> 
   knitr::kable(digits = 3)
 ```
+**Logistic regression results:**
 
-* Interpretation of results:
+* The logistic regression analysis reveals several key risk factors associated with HIV in the US. 
+  * Individuals reporting same-sex contacts exhibit a significant increase in the odds of being HIV positive (OR = 17.020), emphasizing the importance of considering sexual behavior in HIV risk assessment. 
+  * Gender is also a significant predictor, with males having 6.171 times higher odds of being HIV positive compared to females. 
+  * Age demonstrates a positive association, indicating a slight increase in HIV odds with 1-year increase in age (OR = 1.058). 
+  * Among racial categories, Non-Hispanic Black individuals show the highest risk (OR = 7.941), while Mexican Americans do not exhibit a statistically significant association. 
+  * Regarding marital status, divorced, separated, and never married individuals display elevated odds of being HIV positive, suggesting that certain relationship statuses may contribute to increased vulnerability.
+* These findings underscore the complex interplay of demographic factors in HIV risk and contribute valuable insights for targeted prevention and intervention strategies.
 
 
-## Bootstrap
+### Bootstrap
 
-```{r}
+```{r warning = FALSE}
 bootstrap_df =
   cleaned_regression_df |> 
   bootstrap(n = 500) |> 
@@ -411,7 +419,7 @@ bootstrap_df =
 ```
 
 
-Look at the distribution of estimates under repeated sampling
+### Distribution of estimates under repeated sampling
 ```{r}
 bootstrap_df|> 
   filter(term == "age") |> 
@@ -429,7 +437,7 @@ bootstrap_df|>
 * This is the uncertainty that we would get in this dataset if we do repeated sampling
 
 
-Compute bootstrap mean OR and 95% CI 
+### Bootstrap mean OR and 95% CI 
 ```{r}
 bootstrap_df|> 
   summarize(
@@ -439,3 +447,14 @@ bootstrap_df|>
     )|> 
   knitr::kable(digits = 3)
 ```
+**Bootstrap Confidence Intervals:**
+
+* The bootstrap analysis yields informative insights into the association between various sociodemographic factors and HIV outcomes. 
+  * Notably, the wide 95% confidence intervals (CI) for most variables, excluding age, suggest substantial uncertainty in the estimated odds ratios. The variable "samesexcontact" stands out with a mean odds ratio of 18.499 and a relatively narrow CI (10.862 to 31.096), indicating a robust positive association with HIV risk. 
+  * In contrast, variables like "genderMale," "marriageDivorced," "marriageLiving with partner," "marriageNever married," "marriageSeparated," "marriageWidowed," "raceMexican American," "raceNon-Hispanic Black," and "raceOther Hispanic" exhibit wide CIs, signifying considerable variability in their associations with HIV. 
+* The broad 95% CI underscores the uncertainty in the magnitude of these associations and suggests a need for caution in drawing definitive conclusions. This may be attributed to sample variability or other unaccounted factors influencing the observed relationships. 
+  
+## Conclusion: 
+The logistic regression and bootstrap analyses indicate that several demographic factors are associated with HIV outcomes, same-sex behavior showing a particularly strong positive association. However, the wide 95% confidence intervals for most variables, excluding age, show significant uncertainty in the estimated odds ratios, highlighting the limitations of the study. These broad intervals may stem from sample variability or unaccounted confounders, necessitating caution in drawing definitive conclusions.
+
+Therefore, future research should explore larger and more diverse datasets to enhance the generalizability of findings and address potential sources of variability. Additionally, a thorough investigation into the complex interplay between demographic variables and HIV risk, considering potential interactions and subgroup analyses, could provide a more nuanced understanding of these associations. Moreover, the study could benefit from incorporating behavioral and contextual factors that might contribute to HIV risk.
