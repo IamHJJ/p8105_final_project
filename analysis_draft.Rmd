@@ -7,6 +7,7 @@ output:
     toc_float: true
     theme: yeti
     css: style.css
+    code_folding: hide
 editor_options: 
   chunk_output_type: console
 ---
@@ -26,14 +27,10 @@ The primary objective of this study is to elucidate the temporal dynamics and in
 # Data Cleaning and Preparation
 
 ```{r Load necessary packages, message=FALSE, results='hide', warning=FALSE}
-library(tidyverse) # for data cleaning
-library(dplyr)     # for data cleaning
-library(broom)     # for visualization
-library(ggplot2)   # for visualization
+library(tidyverse) # for data cleaning and manipulation
 library(forecast)  # for ARIMA models
-library(ggplot2)   # for plotting
-library(dplyr)     # for data manipulation
-library(broom)     # for tidying model outputs
+library(broom)     # for tidying model outputs and visualization
+library(plotly)    # for interactive visualization
 ```
 
 Since the dataset has inconsistency in sample size (some come with a sample size and some come without), we assigned the median value to those without sample size so that they could be included in the study without significantly influencing the `sample size` variable. Since the Data Base includes data from all countries worldwide with 5000+ population, we utilized an external country classification dataset from the [World Bank](https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups) to categorize the Data Base for analysis purposes. 
@@ -44,6 +41,7 @@ incidence <- read.csv("surveillance/data/hiv_incidence.csv") |>
     # Replace missing INC_RATE with 0 or other appropriate value
     INC_RATE = replace(INC_RATE, is.na(INC_RATE), 0), 
     # Replace missing SAMPSIZE with median or other appropriate value
+    SAMPSIZE = as.numeric(SAMPSIZE),
     SAMPSIZE = replace(SAMPSIZE, is.na(SAMPSIZE), median(SAMPSIZE, na.rm = TRUE)) 
   )
 
@@ -59,6 +57,22 @@ categorize_decade <- function(year) {
 incidence_grouped <- incidence_grouped |> 
   mutate(decade = sapply(year, categorize_decade)) 
 ```
+
+# Incidence map
+
+```{r incidence_map}
+# A map reports the HIV incidence rates in each country
+map_inc = incidence_grouped |>
+  plot_ly(type = 'choropleth', locations = ~country_code,
+               z = ~inc_rate, text = ~paste(country, ': ', inc_rate, '%'),
+               hoverinfo = 'text',color = ~inc_rate, colors = "Reds") |>
+  layout(title = 'HIV Incidence Rates by country',
+         geo = list(projection = list(type = 'orthographic')))
+
+map_inc
+
+```
+
 
 # Trend Analysis
 
@@ -199,10 +213,11 @@ grouped_data <- sorted_data |>
 Time series analysis is appropriate for examining how data points indexed in time order (like yearly HIV incidence rates) change over time. It is suitable for analyzing trends, seasonal patterns, or forecasting future values. Since we wanted to assess HIV incidence rates by year, time series analysis is a good match. 
 
 ```{r meta-Time-Series Analysis, warning=FALSE}
-library(dplyr)
 library(forecast)
 library(tseries)
 library(purrr)
+library(metafor)
+
 
 # Create a list of unique combinations of region, income_group, and population_subgroup
 unique_combinations <- grouped_data |>
@@ -277,6 +292,10 @@ if (length(time_series_results) > 0) {
   time_series_results
 } 
 ```
+
+
+
+
 
 ### Results
 
@@ -360,8 +379,6 @@ checkresiduals(selected_model)
 Regression analysis is used to understand the relationship between a dependent variable and one or more independent variables. It is suitable for questions like how various factors (like region, income level, population subgroup) are associated with the outcome (e.g., HIV incidence rate). However, it should be noted that linear regression has multiple assumptions as all other regressions, and on top of these, linear regression assums normal distribution of the residuals. 
 
 ```{r linear-Regression Analysis, warning=FALSE}
-library(dplyr)
-library(broom)
 
 # Create a list of unique combinations of region and income_group
 combinations_region_income <- grouped_data |>
