@@ -1,8 +1,8 @@
 ---
-title: "NHANES"
-author: "Junjie Hu and team"
-date: "2023-11-20"
-output: html_document
+title: "Sociodemographic Associated with HIV Infection from 1999 to 2016"
+output:
+  html_document:
+    code_folding: hide
 editor_options: 
   chunk_output_type: inline
 ---
@@ -13,11 +13,18 @@ library(tidyverse)
 library(purrr)
 library(plotly)
 library(modelr)
-
 ```
 
-## import NHANES datafiles
+## Data Sources
+The [National Health and Nutrition Examination Survey](https://wwwn.cdc.gov/nchs/nhanes/) is a program of studies designed to assess the health and nutritional status of adults and children in the United States. The survey is unique in that it combines interviews and physical examinations. NHANES is a major program of the National Center for Health Statistics (NCHS). NCHS is part of the Centers for Disease Control and Prevention (CDC) and has the responsibility for producing vital and health statistics for the Nation.
 
+The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions. The examination component consists of medical, dental, and physiological measurements, as well as laboratory tests administered by highly trained medical personnel. In this study, we used the demographic data, HIV testing, and sexual behavior data from 1999 to 2016 to identify the potential sociodemographic factors associated with HIV infection status.
+
+## Study Objectives
+Our study's primary objective is to analyze the NHANES dataset from 1999 to 2016 to identify sociodemographic factors associated with HIV infection rates in the United States. By examining variables such as age, gender, race, education level, and marial status, we aim to illuminate the complex interplay of societal elements influencing HIV prevalence. This analysis will provide valuable insights into the demographics most affected by HIV, guiding public health strategies and resource allocation to improve prevention and treatment programs. Through this research, we seek to contribute to a more nuanced understanding of HIV epidemiology that could underpin targeted interventions and support the reduction of infection disparities across diverse population groups.
+
+
+## import NHANES datafiles
 Imported demographic, HIV test, and sexual behavior dataframes 1999 - 2016. 
 ```{r}
 demo_list = 
@@ -131,12 +138,6 @@ cleaned_joined_df =
     (MSM >= 1 & MSM <= 600) | (WSW >= 1 & WSW <= 600) ~ 1
   )) |>
   select(seqn, hiv, age, gender, race, education, marriage, year, samesexcontact)
-```
-
-```{r}
-cleaned_joined_df |>
-  group_by(samesexcontact, hiv) |>
-  summarize(n = n())
 ```
 
 Visualization - 1
@@ -359,51 +360,25 @@ cleaned_regression_df=
          )
 ```
 
-This is the full model
+Bivariate analysis
 ```{r}
-fit_alt = cleaned_regression_df |> 
-  glm(hiv_outcome ~ samesexcontact + gender + age + race + education + marriage, data = _, family = binomial())
+variables = c("age","gender","race","samesexcontact","marriage")
+
+fit_and_summarize <- function(var) {
+  model = lm(as.formula(paste("hiv_outcome~", var)), data = cleaned_regression_df) |>
+  broom::tidy()
+}
+
+model_summaries = 
+  map(variables, fit_and_summarize) |>
+  bind_rows() |>
+  filter(p.value <= 0.05 & term != "(Intercept)")
+
+model_summaries |>
+  select(term, estimate, p.value) |>
+  knitr::kable(digits = 3)
 ```
-
-test `samesexcontact`, `gender`, `age`
-```{r}
-fit_alt|> 
-  broom::tidy() |> 
-  mutate(OR = exp(estimate)) |> 
-  select(term, estimate, OR, p.value)
-```
-* `samesexcontact`, `gender`, `age` are all significant
-
-test whether `race` is significant
-```{r}
-fit_no_race = 
-  glm(hiv_outcome ~ samesexcontact + gender + age + education + marriage, data = na.omit(cleaned_regression_df), family = binomial())
-
-anova(fit_no_race, fit_alt, test = 'LRT') |> broom::tidy()
-  
-```
-* p = 0.00, `race` is significant
-
-
-test whether `education` is significant
-```{r}
-fit_no_education = 
-  glm(hiv_outcome ~ samesexcontact + gender + age + race + marriage, data = na.omit(cleaned_regression_df), family = binomial())
-
-anova(fit_no_education, fit_alt, test = 'LRT') |> broom::tidy()
-```
-* p = 0.227, `education` is not significant
-
-test whether `marriage` is significant
-```{r}
-fit_no_marriage = 
-  glm(hiv_outcome ~ samesexcontact + gender + age + race + education, data = na.omit(cleaned_regression_df), family = binomial())
-
-anova(fit_no_marriage, fit_alt, test = 'LRT') |> broom::tidy()
-```
-* p = 0.017, `marriage` is significant
-* Therefore, the final model include `samesexcontact`, `gender`, `age`, `race`, `marriage`
-
+Variables `age`, `gender`, `race`, `samesexcontact`, `marriage` were found significant associated with HIV infection status, at 5% level of significance. Therefore, these variables were included to the final model.
 
 The final model
 ```{r}
