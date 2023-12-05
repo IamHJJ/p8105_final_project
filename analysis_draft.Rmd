@@ -6,7 +6,7 @@ output:
     toc: true
     toc_float: true
     theme: yeti
-    css: style.css
+    css: Home.css
     code_folding: hide
 editor_options: 
   chunk_output_type: console

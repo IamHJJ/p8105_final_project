@@ -2,7 +2,9 @@
 title: "Global HIV Hub"
 author: "Junjie Hu, Ruixi Li, Xuan Lu, Tianyun Jiang, Qinting Shen "
 date: "2023-12-03"
-output: html_document
+output: 
+  html_document:
+    css: Home.css
 ---
 
 # **Global HIV Hub: Surveillance, Analysis, and Resources**
