@@ -143,12 +143,15 @@ cleaned_joined_df =
 
 
 
-Visualization
+# Descriptive visualization of the potential risk factors
+To visualize the association between the selected potential risk factors and HIV test results, we specifically calculated the percent of participants whose HIV-antibody test showing (lbdhi or lbxhivc) ‘positive’ among all the participants who reported to have a ‘positive’ or ‘negative’ value in the antibody test. We further excluded the participants whose status is ‘missing’ or ‘indeterminate’ in the antibody test in our data visualization section.
+Then, we plot each bar chart illustrating the integrated (from 1999 to 2016) percentage of ‘positive’ participants on the y-axis and the risk factor of interest on the x-axis, correlated with a line plot indicating the change of the ‘positive’ participants for each risk factor to assess the association between HIV and each risk factor in a rough way. Besides, the mean age of the positive clusters among each sub-cohort was also calculated for each characteristic/risk factor.
 
-Write a function to combine bar and line plot
+## Write a function to combine bar and line plot
+We firstly wrote a function for creating the combined plot for each risk factor.
 ```{r}
 combine_plot = function(bar, line, indicator){
-  title_g = paste("The Total Percent of HIV Positive Patients from 1999 to 2016 by", indicator)
+  title_g = paste("The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by", indicator)
   
   combine_bar = 
     subplot(bar, line, margin = 0.1) %>% 
@@ -183,15 +186,15 @@ combine_plot = function(bar, line, indicator){
 
 ```
 
-Total percent as y-axis value
-Across Race 
+## Race and the Percent of 'Positive' in HIV Antibody Test 
 ```{r}
 bar_race = 
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(race) %>%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(race = fct_reorder(race, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
@@ -201,8 +204,9 @@ line_race =
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(year, race) %>% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(race = fct_reorder(race, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
@@ -212,16 +216,23 @@ line_race =
 
 combine_race = combine_plot(bar_race, line_race, "Race")
 
+combine_race 
 ```
+The bar plot shown the percent of patients with a positive result from the HIV antibody test in each race when we integrated all datasets from 1999 to 2016. It indicated that the race Non-Hispanic Black has reported the highest percent, while the 'Other Race' had the lowest percent. From the bar plot, disparity among the races.
+The line plot shows the change in the reported, positive percent of HIV-antibody test from 1999 to 2016. We could observe that the trend in each race are different, but the Non-Hispanic Black and Other Hispanic had a decreasing trend over 1999 to 2016.
+From the two plots, we found that the mean age in each race and each year were also different.
 
-Gender
+
+
+## Sex and the Percent of 'Positive' in HIV Antibody Test 
 ```{r}
 bar_gender = 
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(gender) %>%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~gender, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis")
@@ -231,24 +242,30 @@ line_gender =
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(year, gender) %>% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~gender, type = "scatter", mode = "lines+markers",
           text = ~text_label, colors = "viridis")
 
 combine_gender = combine_plot(bar_gender, line_gender, "Gender")
-
+combine_gender
 ```
+The bar plot and the line plot indicated that male has reported much higher percent than females. From the line plot, we observed that the positive percent were decreasing in each sex. 
+From the two plots, we found that the mean age in females appeared to be slightly higher than males among the patients with a positive test result.
 
-Across Education level
+
+
+## Education Level and the Percent of 'Positive' in HIV Antibody Test 
 ```{r}
 bar_edu = 
 cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(education) %>%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
             hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", 
@@ -263,8 +280,9 @@ line_edu =
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(year, education) %>% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", 
                                          "High school graduate or equivalent", 
@@ -276,19 +294,22 @@ line_edu =
 
 
 combine_edu = combine_plot(bar_edu, line_edu, "Education")
-
-
+combine_edu 
 ```
+The bar plot indicated that the group with education level of '9-11th grade' has reported the highest percent, while the 'College graduate or above' had the lowest percent; disparity among the education was also observed.
+From the line plot, we observed that the trend over 1999 to 2016 in each education level are different, but with a decreasing overall trend. 
+From the two plots, we found that the mean age in each race and each year were also different, and it is hard to find a trend.
 
 
-Across marital status
+## Marital status and the Percent of 'Positive' in HIV Antibody Test 
 ```{r}
 bar_mar = 
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
   group_by(marriage) %>%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(marriage = fct_reorder(marriage, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
@@ -299,8 +320,9 @@ line_mar =
   cleaned_joined_df %>% 
   drop_na(hiv, marriage) %>% 
   group_by(year, marriage) %>% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(marriage = fct_reorder(marriage, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
@@ -308,22 +330,28 @@ line_mar =
           text = ~text_label, colors = "viridis") 
 
 combine_mar = combine_plot(bar_mar, line_mar, "Marital Status")
+combine_mar
 ```
+The bar plot indicated that the 'widowed' has reported the highest percent, while the 'married' had the lowest percent.
+From the line plot, we observed that the trend over 1999 to 2016 in each education level are different, but with a decreasing overall trend (except for 'widowed', which seemed to be an outlier). 
+From the two plots, we found that the mean age in each marital status group and each year also had disparities, and it was hard to find a trend.
 
 
-Sexual behavior
+
+## Same-sex Sexual Behavior and the Percent of 'Positive' in HIV Antibody Test 
 ```{r}
 bar_sexbehave = 
   cleaned_joined_df %>%
   drop_na(hiv) %>% 
   mutate(samesexcontact = recode(samesexcontact, "0" = "No same-sex sexual behavior", 
                                   "1" = "Has same-sex sexual behavior")) %>% 
-  group_by(samesexcontact, gender) %>% 
-  summarize(total_par = n(), age_mean = round(mean(age), 2), hiv_num = sum(hiv == "Reactive"),
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>% 
+  group_by(samesexcontact) %>% 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>% 
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
-  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis") 
+  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~samesexcontact, type = "bar", text = ~text_label, colors = "viridis") 
 
 line_sexbehave =
   cleaned_joined_df %>% 
@@ -331,41 +359,21 @@ line_sexbehave =
   mutate(samesexcontact = recode(samesexcontact, "0" = "No same-sex sexual behavior", 
                                   "1" = "Has same-sex sexual behavior")) %>% 
   group_by(year, samesexcontact) %>% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~samesexcontact, type = "scatter", mode = "lines+markers",
           text = ~text_label, colors = "viridis") 
 
 
-combine_mar = combine_plot(bar_sexbehave, line_sexbehave, "Sexual Behavior")
-
+combine_sexbehave = combine_plot(bar_sexbehave, line_sexbehave, "Sexual Behavior")
+combine_sexbehave
 ```
+The bar plot and the line plot indicated that the population has same-sex sexual behavior has reported much higher percent than the population without same-sex sexual behavior. From the line plot, we observed that the positive percent fluctuated a lot among the group that has same-sex sexual behavior; while in the group that without same-sex sexual behavior, the the positive percent in each year did not fluctuate as much.
+From the two plots, we found that the mean age in the group that has same-sex sexual behavior appeared to be higher than the group without same-sex sexual behavior.
 
-
-
-
-Visualization 9: by year, stratified by Sexual behavior
-```{r}
-line_behavior =
-  cleaned_joined_df %>% 
-  drop_na(hiv, samesexcontact) %>% 
-  mutate(samesexcontact = recode(samesexcontact, "0" = "No same-sex sexual behaviour", 
-                                  "1" = "Has same-sex sexual behaviour")) %>% 
-  group_by(year, samesexcontact) %>% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == "Reactive") / sum(hiv != "Reactive", hiv == "Reactive") * 100, 3)) %>%
-  ungroup() %>% 
-  mutate(text_label = str_c("mean age: ", age_mean)) %>% 
-  plot_ly(x = ~year, y = ~hiv_percent, color = ~samesexcontact, type = "scatter", mode = "lines+markers",
-          text = ~text_label, colors = "viridis") %>% 
-  layout(
-      xaxis = list(title = "Year"),
-      yaxis = list(title = "Total Percent of HIV Positive Patients"),
-      title = "The Total Percent of HIV Positive Patients from 1999 to 2016 by Sexual Behavior"
-    )
-```
 
 ## logistic regression
 
