@@ -15,14 +15,14 @@ library(plotly)
 library(modelr)
 ```
 
-## Data Sources
-The [National Health and Nutrition Examination Survey](https://wwwn.cdc.gov/nchs/nhanes/) is a program of studies designed to assess the health and nutritional status of adults and children in the United States. The survey is unique in that it combines interviews and physical examinations. NHANES is a major program of the National Center for Health Statistics (NCHS). NCHS is part of the Centers for Disease Control and Prevention (CDC) and has the responsibility for producing vital and health statistics for the Nation.
+# Data Sources
+The [National Health and Nutrition Examination Survey](https://wwwn.cdc.gov/nchs/nhanes/) is designed to evaluate the health and nutritional status of both adults and children. In 1999, the NHANES study transitioned into a continuous format, enabling investigators to conduct longitudinal studies. NHANES encompasses both interview data and physical examination data, which involved information from different perspectives and fields, providing researchers with a comprehensive dataset to examine the prevalence and risk factors associated with various diseases. In this study, we used the demographic data, HIV testing, and sexual behavior data from 1999 to 2016 to identify the potential sociodemographic factors associated with HIV infection status.
 
-The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions. The examination component consists of medical, dental, and physiological measurements, as well as laboratory tests administered by highly trained medical personnel. In this study, we used the demographic data, HIV testing, and sexual behavior data from 1999 to 2016 to identify the potential sociodemographic factors associated with HIV infection status.
-
-## Study Objectives
+# Study Objectives
 Our study's primary objective is to analyze the NHANES dataset from 1999 to 2016 to identify sociodemographic factors associated with HIV infection rates in the United States. By examining variables such as age, gender, race, education level, and marial status, we aim to illuminate the complex interplay of societal elements influencing HIV prevalence. This analysis will provide valuable insights into the demographics most affected by HIV, guiding public health strategies and resource allocation to improve prevention and treatment programs. Through this research, we seek to contribute to a more nuanced understanding of HIV epidemiology that could underpin targeted interventions and support the reduction of infection disparities across diverse population groups.
 
+
+# Data Cleaning
 
 ## import NHANES datafiles
 Imported demographic, HIV test, and sexual behavior dataframes 1999 - 2016. 
@@ -145,6 +145,7 @@ cleaned_joined_df =
 
 # Descriptive visualization of the potential risk factors
 To visualize the association between the selected potential risk factors and HIV test results, we specifically calculated the percent of participants whose HIV-antibody test showing (lbdhi or lbxhivc) ‘positive’ among all the participants who reported to have a ‘positive’ or ‘negative’ value in the antibody test. We further excluded the participants whose status is ‘missing’ or ‘indeterminate’ in the antibody test in our data visualization section.
+
 Then, we plot each bar chart illustrating the integrated (from 1999 to 2016) percentage of ‘positive’ participants on the y-axis and the risk factor of interest on the x-axis, correlated with a line plot indicating the change of the ‘positive’ participants for each risk factor to assess the association between HIV and each risk factor in a rough way. Besides, the mean age of the positive clusters among each sub-cohort was also calculated for each characteristic/risk factor.
 
 ## Write a function to combine bar and line plot
