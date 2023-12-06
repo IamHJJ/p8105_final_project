@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Study Objective
 
-The primary objective of this study is to elucidate the temporal dynamics and influential factors affecting HIV incidence rates on a global scale, with a particular focus on diverse sub-populations and geographic regions. We aim to achieve this by conducting a detailed meta-analysis that includes time series and regression analyses to identify significant trends, patterns, and associations. Specifically, our analysis leverages ARIMA modeling to investigate time-dependent trends and linear regression to assess the impact of socioeconomic factors, thereby informing targeted public health strategies. The study places a special emphasis on Sub-Saharan Africa, where preliminary findings indicate a general decline in incidence rates among key sub-populations, such as sex workers, since the early 1990s. By dissecting these trends across varying income groups and regions, we seek to prioritize interventions and allocate resources more effectively in the global fight against HIV.
+The primary objective of this study is to elucidate the temporal dynamics and influential factors affecting HIV incidence rates on a global scale, with a particular focus on diverse sub-populations and geographic regions. We aim to achieve this by conducting a  time-series analysis to identify significant trends, patterns, and associations. Specifically, our analysis leverages ARIMA modeling to investigate time-dependent trends thereby informing targeted public health strategies. The study places a special emphasis on Sub-Saharan Africa, where preliminary findings indicate a general decline in incidence rates among key sub-populations, such as sex workers, since the early 1990s. By dissecting these trends across varying income groups and regions, we seek to prioritize interventions and allocate resources more effectively in the global fight against HIV.
 
 # Data Cleaning and Preparation
 
@@ -58,28 +58,35 @@ incidence_grouped <- incidence_grouped |>
   mutate(decade = sapply(year, categorize_decade)) 
 ```
 
-# Incidence map
+# Analysis
 
-```{r incidence_map}
-# A map reports the HIV incidence rates in each country
-map_inc = incidence_grouped |>
-  plot_ly(type = 'choropleth', locations = ~country_code,
-               z = ~inc_rate, text = ~paste(country, ': ', inc_rate, '%'),
-               hoverinfo = 'text',color = ~inc_rate, colors = "Reds") |>
-  layout(title = 'HIV Incidence Rates by country',
-         geo = list(projection = list(type = 'orthographic')))
+## Analysis Plan Flowchart
 
-map_inc
+```{r meta-flowchart, echo=FALSE}
+library(DiagrammeR)
 
+grViz("
+digraph flowchart {
+  
+  # Define nodes
+  node [shape = box]
+  A [label = 'Data Preparation']
+  B [label = 'Exploratory Data Analysis (EDA)']
+  C [label = 'Time-Series Analysis-ARIMA Model']
+  D [label = 'Model Diagnostics']
+  E [label = 'Reporting Results']
+  F [label = 'Visualization']
+
+  # Define edges
+  A -> B
+  B -> C
+  C -> D
+  D -> E
+  E -> F
+}")
 ```
 
-
-# Trend Analysis
-
-We attempted to understand trends within the dataset through two paths. 
-
-- First, we categorized data by their continental region, their studied country's national income level, and decade of which the study is done. We produced a heatmap for reported HIV incidence rate grouped by these categories.
-- Second, we categorized data by each study's reported target population (or population subgroup). We produced a barchart for reported number of HIV cases grouped by these categories.
+## Data Preperation
 
 ```{r Trend analysis, warning=FALSE, message=FALSE}
 # For trend analysis involving region (continental), income_group (i.e., high-income, low-income, middle-income countries), and decade (1980s, 1990s, 2000s, 2010s, 2020s).
@@ -111,7 +118,30 @@ trend_subgroup <- incidence_grouped |>
   )
 ```
 
-1. **Heatmap for Incidence Rate by Region, Decade, and National Income Level**
+
+## Exploratory Data Analysis (EDA)
+
+
+1. *Incidence map*
+
+* we showed HIV incidence by country.
+
+```{r incidence_map}
+# A map reports the HIV incidence rates in each country
+map_inc = incidence_grouped |>
+  plot_ly(type = 'choropleth', locations = ~country_code,
+               z = ~inc_rate, text = ~paste(country, ': ', inc_rate, '%'),
+               hoverinfo = 'text',color = ~inc_rate, colors = "Reds") |>
+  layout(title = 'HIV Incidence Rates by country',
+         geo = list(projection = list(type = 'orthographic')))
+
+map_inc
+
+```
+
+2. **Heatmap for Incidence Rate by Region, Decade, and National Income Level**
+
+* we categorized data by their continental region, their studied country's national income level, and decade of which the study is done. We produced a heatmap for reported HIV incidence rate grouped by these categories.
 
 ```{r Trend-visualization-heatmap, fig.height=8, fig.width=10}
 trend_continental <- trend_continental |> 
@@ -138,7 +168,9 @@ heatmap_plot <- trend_continental |>
 print(heatmap_plot)
 ```
 
-2. **Bar Plot for Total Cases by Population Subgroup**
+3. **Bar Plot for Total Cases by Population Subgroup**
+
+* we categorized data by each study's reported target population (or population subgroup). We produced a barchart for reported number of HIV cases grouped by these categories.
 
 ```{r Trend-visualization-bar, fig.height=15, fig.width=8}
 trend_subgroup |> 
@@ -152,43 +184,17 @@ trend_subgroup |>
         legend.position = "none")
 ```
 
-# Meta-Analysis
 
-## Analysis Plan Flowchart
 
-```{r meta-flowchart, echo=FALSE}
-library(DiagrammeR)
 
-grViz("
-digraph flowchart {
-  
-  # Define nodes
-  node [shape = box]
-  A [label = 'Data Preparation']
-  B [label = 'Time-Series Analysis']
-  C [label = 'Regression Analysis']
-  D [label = 'Subgroup Analysis']
-  E [label = 'Meta-Regression']
-  F [label = 'Sensitivity Analysis']
-  G [label = 'Model Diagnostics']
-  H [label = 'Reporting Results']
-  I [label = 'Visualization']
 
-  # Define edges
-  A -> B
-  A -> C
-  B -> D
-  C -> D
-  D -> E
-  D -> F
-  E -> G
-  F -> G
-  G -> H
-  H -> I
-}")
-```
+## Time-Series Analysis: ARIMA Model
 
-## Data Preparation for Meta-Analysis
+Time series analysis is appropriate for examining how data points indexed in time order (like yearly HIV incidence rates) change over time. It is suitable for analyzing trends, seasonal patterns, or forecasting future values. Since we wanted to assess HIV incidence rates by year, time series analysis is a good match. 
+
+
+
+### Data Preparation 
 ```{r meta-data preparation, warning=FALSE}
 sorted_data <- incidence_grouped |> 
   arrange(year) |>
@@ -208,15 +214,11 @@ grouped_data <- sorted_data |>
 ```
 
 
-## Time-Series Analysis
-
-Time series analysis is appropriate for examining how data points indexed in time order (like yearly HIV incidence rates) change over time. It is suitable for analyzing trends, seasonal patterns, or forecasting future values. Since we wanted to assess HIV incidence rates by year, time series analysis is a good match. 
-
+### Model Building
 ```{r meta-Time-Series Analysis, warning=FALSE}
 library(forecast)
 library(tseries)
 library(purrr)
-library(metafor)
 
 
 # Create a list of unique combinations of region, income_group, and population_subgroup
@@ -294,10 +296,7 @@ if (length(time_series_results) > 0) {
 ```
 
 
-
-
-
-### Results
+## Results
 
 **ARIMA Model:**
 
@@ -323,9 +322,9 @@ if (length(time_series_results) > 0) {
 - The ADF test suggests that the series may not be completely stationary, indicating that further differencing or a different model specification may be necessary.
 - The significant Ljung-Box test implies that there are autocorrelations in the residuals that the model is not capturing, which could mean that important predictors or higher-order lags might be missing from the model. Given the limited information on the Data Base we are using, we are unable to progress further. However, future research may consider incorporating other predictors for the model. 
 
-### Time Series Trend Visualization
+## Model Diagnosis and Time Series Trend Visualization
 
-#### 1. Select which model/combination to visualize
+### 1. Select which model/combination to visualize
 ```{r time series visualize - model selection}
 # Loop through the results and print the summary of each ARIMA model
 for (combination in names(time_series_results)) {
@@ -336,7 +335,7 @@ for (combination in names(time_series_results)) {
 
 Based on the summary of the ARIMA model for the combination "Sub-Saharan Africa_Lower middle income_Sex workers," it looks like an interesting case to visualize. The ARIMA(0,1,2) model with drift indicates that the time series is differenced once (to make it stationary) and includes two moving average terms. The drift term suggests a linear trend over time.
 
-#### 2. Time Series Trend Visualization
+### 2. Time Series Trend Visualization
 ```{r time series visualize - visualization}
 # Extracting the data and model for "Sub-Saharan Africa_Lower middle income_Sex workers"
 selected_model <- time_series_results[["Sub-Saharan Africa_Lower middle income_Sex workers"]]$arima_model
@@ -362,7 +361,7 @@ ggplot(selected_data, aes(x = year, y = mean_inc_rate)) +
 
 - **Interpretation of Trend**: There is a notable decrease in the mean incidence rate from the early 1990s, which then stabilizes into a more fluctuating pattern from the 2000s onwards. The red line (fitted values) is capturing this trend, suggesting that the ARIMA model is accounting for the major trend in the data.
 
-#### 3. Diagnostic Plots for the ARIMA Model
+### 3. Diagnostic Plots for the ARIMA Model
 ```{r time series visualize - model diagnostic plot}
 # Diagnostic plots for the ARIMA model of the selected combination
 checkresiduals(selected_model)
@@ -374,237 +373,10 @@ checkresiduals(selected_model)
 
 - **Bottom Right Plot (Histogram and Q-Q Plot of Residuals)**: The histogram with the overlaid density plot and the Q-Q plot assess the normality of the residuals. The histogram seems to show that residuals may be normally distributed, but the Q-Q plot indicates some deviations from normality, particularly in the tails. This suggests that the residuals have some heavier tails than the normal distribution, which can occur if there are outliers or extreme values in our data.
 
-## Linear Regression Analysis
-
-Regression analysis is used to understand the relationship between a dependent variable and one or more independent variables. It is suitable for questions like how various factors (like region, income level, population subgroup) are associated with the outcome (e.g., HIV incidence rate). However, it should be noted that linear regression has multiple assumptions as all other regressions, and on top of these, linear regression assums normal distribution of the residuals. 
-
-```{r linear-Regression Analysis, warning=FALSE}
-
-# Create a list of unique combinations of region and income_group
-combinations_region_income <- grouped_data |>
-  distinct(region, income_group)
-
-# Create a list of unique population_subgroup
-combinations_subpopulation <- grouped_data |>
-  distinct(population_subgroup)
-
-# Function to perform regression analysis on a subset of data
-perform_regression_analysis <- function(subset_data) {
-  if (nrow(subset_data) < 10) {  # Setting a threshold for the minimum number of data points
-    warning("Not enough data points to fit regression model for the given combination.")
-    return(NULL)
-  }
-  
-  # Fit linear regression model
-  reg_model <- lm(mean_inc_rate ~ year, data = subset_data)
-  
-  # Collect the summary statistics of the model
-  reg_summary <- summary(reg_model)
-  
-  # Collect tidy results of the model for easy handling
-  tidy_results <- tidy(reg_model)
-  
-  # Return the results
-  return(list(reg_model = reg_model, reg_summary = reg_summary, tidy_results = tidy_results))
-}
-
-# List to store results for region and income_group
-regression_region_income_results <- list()
-
-# Loop over each region & income level combination
-for(i in seq_len(nrow(combinations_region_income))) {
-  # Filter the data for the current combination
-  current_data <- grouped_data |>
-    filter(
-      region == combinations_region_income$region[i],
-      income_group == combinations_region_income$income_group[i]
-    )
-  
-  # Perform regression analysis
-  result <- perform_regression_analysis(current_data)
-  
-  # Store the result with a unique name if result is not NULL
-  if (!is.null(result)) {
-    regression_region_income_results[[paste(combinations_region_income$region[i], combinations_region_income$income_group[i], sep = "_")]] <- result
-  }
-}
-
-# List to store results for population_subgroup
-regression_subpopulation_results <- list()
-
-# Loop over each population_subgroup
-for(i in seq_len(nrow(combinations_subpopulation))) {
-  # Filter the data for the current population_subgroup
-  current_data <- grouped_data |>
-    filter(
-      population_subgroup == combinations_subpopulation$population_subgroup[i]
-    )
-  
-  # Perform regression analysis
-  result <- perform_regression_analysis(current_data)
-  
-  # Store the result with a unique name if result is not NULL
-  if (!is.null(result)) {
-    regression_subpopulation_results[[combinations_subpopulation$population_subgroup[i]]] <- result
-  }
-}
-
-# Check the first element of regression_region_income_results to make sure it contains a valid model
-if(length(regression_region_income_results) > 0) {
-  print(regression_region_income_results[[1]])
-}
-
-# Check the first element of regression_subpopulation_results to make sure it contains a valid model
-if(length(regression_subpopulation_results) > 0) {
-  print(regression_subpopulation_results[[1]])
-}
-```
-
-### Regression Model Diagnostics
-
-Based on the results, we performed the following model diagnostics: 
-
-- **Check for Linearity**: Ensure that the relationship between the predictor (year) and the response variable (mean_inc_rate) is linear.
-- **Investigate Outliers**: Large residuals may indicate outliers, which can unduly influence the regression model. It might be worth investigating these data points to see if they should be included in the analysis.
-- **Consider Model Complexity**: The model may be too simple. Perhaps the relationship between year and incidence rate is not linear, or there may be other variables or transformations that could improve the model.
-
-```{r linear-Model Diagnostics}
-# Function to plot diagnostics for a regression model
-plot_regression_diagnostics <- function(reg_model) {
-  par(mfrow = c(2, 2))
-  plot(reg_model)
-}
-
-# Perform diagnostics on the first element of regression_region_income_results
-if(length(regression_region_income_results) > 0) {
-  plot_regression_diagnostics(regression_region_income_results[[1]]$reg_model)
-}
-
-# Perform diagnostics on the first element of regression_subpopulation_results
-if(length(regression_subpopulation_results) > 0) {
-  plot_regression_diagnostics(regression_subpopulation_results[[1]]$reg_model)
-}
-```
-
-For both sets of plots, the Residuals vs Fitted and Scale-Location plots look acceptable, though there is some indication of potential heteroscedasticity in the second set. The Q-Q Plots suggest that the residuals may not be perfectly normally distributed, especially for the second model. The Residuals vs Leverage plots indicate that there are some influential points in the first model, particularly observation 70. All of these **warrants us to be careful in terms of our final interpretation/conclusion**. 
-
-### Results
-
-- **Model Coefficients**: The estimated coefficients for the year variable in both models are quite small, indicating that time may not have a strong influence on the mean_inc_rate for these particular subsets of data.
-- **Statistical Significance**: The p-values associated with the year coefficient are very high (0.987 for the region-income model and 0.605 for the subpopulation model), which means that the year variable is not statistically significant in predicting the mean_inc_rate in these models.
-- **Model Fit**: The R-squared values are very close to zero, which suggests that the models explain none of the variability in the response data around its mean.
-- **Residuals**: The residuals' summary shows that there might be some large residuals in the data, which could be potential outliers or indicate model misspecification.
-
-
-### Sensitivity Analysis
-
-Sensitivity analysis in the context of regression analysis is used to determine how sensitive your results are to changes in the model. This involves testing how the model's predictions vary with changes in the modeling approach, such as using different subsets of data, handling outliers, or changing the model specification. 
-
-#### 1. Varying Model Specification
-
-```{r sensitivity-model specification}
-# Original model
-original_model <- lm(mean_inc_rate ~ year + region + income_group, data = grouped_data)
-
-# Model excluding a potentially influential variable
-model_without_variable <- lm(mean_inc_rate ~ year + region, data = grouped_data)
-
-# Compare the results
-summary(original_model)
-summary(model_without_variable)
-```
-
-**Original Model vs. Model Without `income_group`:**
-
-- The presence or absence of income_group as a predictor does not seem to drastically change the R-squared value, indicating that while income_group contributes some information, it might not be a major driver in the model.
-- The coefficients of year and region remain relatively stable between the two models, suggesting that their influence is somewhat independent of income_group.
-- The significance levels (Pr(>|t|)) for most variables remained similar, indicating that the overall statistical relationships in your model are robust to the inclusion/exclusion of income_group.
-
-#### 2. Handling Outliers
-
-```{r sensitivity-outliers}
-# Identify outliers (example using Cook's distance)
-cooksd <- cooks.distance(original_model)
-outlier_threshold <- 4 / length(cooksd)
-outliers <- which(cooksd > outlier_threshold)
-
-# Model without outliers
-model_without_outliers <- lm(mean_inc_rate ~ year + region + income_group, data = grouped_data[-outliers,])
-
-# Compare the results
-summary(original_model)
-summary(model_without_outliers)
-```
-
-**Original Model vs. Model Without Outliers:**
-
-- Removing outliers leads to a noticeable change in the coefficients and their standard errors, suggesting that outliers had some influence on the model estimates.
-- The R-squared value improves slightly in the model without outliers, which could indicate a better fit.
-- The residual standard error decreases significantly when outliers are removed, suggesting that these outliers were contributing to a larger error in the original model.
-
-#### 3. Using Different Data Subsets
-
-```{r sensitivity-different subsets}
-# Splitting the data into two subsets
-set.seed(123)  # for reproducibility
-data_subset1 <- grouped_data[sample(nrow(grouped_data), nrow(grouped_data) / 2), ]
-data_subset2 <- grouped_data[!rownames(grouped_data) %in% rownames(data_subset1), ]
-
-# Fit the model to each subset
-model_subset1 <- lm(mean_inc_rate ~ year + region + income_group, data = data_subset1)
-model_subset2 <- lm(mean_inc_rate ~ year + region + income_group, data = data_subset2)
-
-# Compare the results
-summary(model_subset1)
-summary(model_subset2)
-```
-
-**Model on Subset 1 vs. Model on Subset 2:**
-
-- There are some differences in the coefficients and their significance between the two subsets, indicating potential variability in the data or the influence of specific predictors.
-- The R-squared values differ between the subsets, which could indicate variability in how well the model explains the variance in the dependent variable across different samples of the data.
-
-#### 4. Bootstrap Resampling
-
-```{r sensitivity-bootstrap}
-# Bootstrap resampling
-library(boot)
-
-# Function to obtain coefficients
-boot_function <- function(data, indices) {
-  sample_data <- data[indices, ]
-  model <- lm(mean_inc_rate ~ year + region + income_group, data = sample_data)
-  return(coef(model))
-}
-
-# Running bootstrap
-bootstrap_results <- boot(grouped_data, boot_function, R = 1000)
-
-# View summary of bootstrap results
-boot.ci(bootstrap_results, type = "bca")
-```
-
-**Bootstrap Confidence Intervals:**
-
-- The BCa interval you provided appears to be wide ((-46.1, 296.6)), suggesting a considerable amount of uncertainty in the estimate. However, without knowing which coefficient this interval corresponds to, it's challenging to draw specific conclusions.
-- Wide confidence intervals in bootstrap results suggest variability in your model's estimates and a need for caution in interpreting the model's predictive power.
-
-#### 5. Interpreting Sensitivity Analysis
-
-**General Observations**
-
-- Our model shows some sensitivity to the inclusion of certain predictors and the presence of outliers. This suggests the need for careful consideration of model specifications and data quality.
-- The differences in model outcomes between data subsets imply that the relationships in our data is entirely consistent across different samples. This could be due to underlying variability in the data or different patterns within subgroups of the data.
-
-**Recommendations for Future Research**
-
-- Consider whether any additional variables, not included in the model, might explain some of the variability and improve the model's consistency.
-- Explore if different modeling approaches, such as segmented regression or hierarchical models, might better account for the variability in the data.
 
 # Conclusion
 
 The study has identified meaningful patterns in the incidence rates of HIV among various subgroups in Sub-Saharan Africa. The time series analysis, particularly the ARIMA(0,1,2) model with drift, has captured a notable decreasing trend in HIV incidence rates since the early 1990s. This trend stabilizes somewhat in the 2000s, with some fluctuation, but does not show a significant increase, indicating a potential effectiveness of interventions and awareness over time. Diagnostic plots suggest that while the model fits well overall, there are indications of outliers or anomalous events that could be affecting the residuals, pointing to areas where the model could be refined.
 
-The linear regression analysis further enhances our understanding by evaluating the impact of various factors such as year, region, and income group on HIV incidence rates. Sensitivity analysis indicates that the model's findings are relatively robust, although some sensitivity to model specifications and outliers was noted. This suggests that while the model provides a solid baseline understanding, it could benefit from further refinement.
 
 The overall conclusion is that HIV incidence rates in Sub-Saharan Africa show a decreasing trend over the years among sex workers, with some variability that might be explained by regional and economic factors. The analysis underscores the importance of tailored public health interventions and the need for continuous monitoring and adaptation to sustain and enhance the progress made in HIV prevention and treatment.
