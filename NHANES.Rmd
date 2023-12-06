@@ -2,6 +2,10 @@
 title: "Sociodemographic Associated with HIV Infection from 1999 to 2016"
 output:
   html_document:
+    toc: true
+    toc_float: true
+    theme: yeti
+    css: Home.css
     code_folding: hide
 editor_options: 
   chunk_output_type: inline
