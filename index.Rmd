@@ -1,7 +1,6 @@
 ---
 title: "Global HIV Hub"
 author: "Junjie Hu, Ruixi Li, Xuan Lu, Tianyun Jiang, Qinting Shen "
-date: "2023-12-03"
 output: 
   html_document:
     css: Home.css
@@ -9,24 +8,30 @@ output:
 
 # **Global HIV Hub: Surveillance, Analysis, and Resources**
 
+## [Section 0: About HIV](about_hiv.html)
+This page provide basic information about HIV and AIDs. Learning the basics about HIV can keep you healthy and prevent HIV transmission!
 
-## [Section 1: HIV/AIDS Surveillance Data Analysis across Developing Countries](analysis_draft.html)
+![](images/about_hiv.png)
+
+## [Section 1: Sociodemographic Associated with HIV Infection](NHANES.html)
+In this section, we analyze and identify the potential sociodemographic risk and preventive factors associated with HIV infection in the Untied States utilizing NHANES dataset.
+
+![](images/risk_factors.png)
+
+
+## [Section 2: HIV/AIDS Surveillance Data Analysis across Developing Countries](analysis_draft.html)
 
 The primary goal of this section is to analyze information 
 on HIV prevalence, incidence rates, and AIDS mortality from available studies across developing countries. This project also helps identify the most vulnerable gender, sub-population, and geographic region.
 
 ![](images/hiv_surveillance.png)
 
-## [Section 2: Sociodemographic Associated with HIV Infection](NHANES.html)
-In this section, we analyze and identify the potential sociodemographic risk and preventive factors associated with HIV infection in the Untied States utilizing NHANES dataset.
-
-![](images/risk_factors.png)
-
 ## [Section 3: HIV-related Resources and Prevention Stratgies](extra_resources.html)
 This page is dedicated to providing you with comprehensive resources and accessible programs that are pivotal in the treatment and prevention of HIV.
 
 ![](images/resources.jpeg)
 
+## [Final report](project_report.html)
 
 
 

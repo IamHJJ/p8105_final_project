@@ -1,7 +1,5 @@
 ---
-title: "Extra Resources"
-author: "Junjie Hu"
-date: "2023-12-03"
+title: "Welcome to Our HIV Resources Page"
 output: 
   html_document:
     toc: true
@@ -10,14 +8,25 @@ output:
 ---
 
 
-## Welcome to Our HIV Resources Page
-
 In the journey to manage and prevent HIV, knowledge is power and support is paramount. This page is dedicated to providing you with comprehensive resources and accessible programs that are pivotal in the treatment and prevention of HIV. Whether you are seeking guidance for yourself, a loved one, or if you're a healthcare provider looking for additional information, you will find a curated collection of links to organizations, support groups, medical insights, and educational materials that align with the latest in HIV care practices.
 
 From cutting-edge treatment options and medication assistance programs to community support networks and preventative education, our resources are carefully selected to empower, inform, and assist. We understand the importance of up-to-date, reliable, and empathetic resources in the fight against HIV, and we strive to help you navigate the path to wellness and resilience. Explore our links to discover the tools and connections that can make a significant difference in the lives of those affected by HIV.
 
-## Treatment
-[More info in CDC](https://www.cdc.gov/hiv/basics/livingwithhiv/treatment.html)
+![](images/hiv_prevention.png)
 
 ## Prevention
+
+Today, more tools than ever are available to prevent HIV. You can use strategies such as abstinence (not having sex), never sharing needles, and using condoms the right way every time you have sex. You may also be able to take advantage of HIV prevention medicines such as pre-exposure prophylaxis (PrEP) and post-exposure prophylaxis (PEP). If you have HIV, there are many actions you can take to prevent transmitting HIV to others.
 [More info in CDC](https://www.cdc.gov/hiv/basics/prevention.html)
+
+![](images/hiv_treatment.png)
+
+## Treatment
+
+HIV treatment (antiretroviral therapy or ART) involves taking medicine as prescribed by a health care provider. HIV treatment reduces the amount of HIV in your body and helps you stay healthy.
+* There is no cure for HIV, but you can control it with HIV treatment.
+* Most people can get the virus under control within six months.
+* HIV treatment does not prevent transmission of other sexually transmitted diseases.
+[More info in CDC](https://www.cdc.gov/hiv/basics/livingwithhiv/treatment.html)
+
+

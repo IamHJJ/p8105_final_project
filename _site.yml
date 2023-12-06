@@ -3,12 +3,17 @@ output_dir: "."
 navbar:
   title: "Global HIV Hub"
   right:
+  
+    - text: "About HIV"
+      href: about_hiv.html
     - text: "HIV Surveillance"
       href: analysis_draft.html
     - text: "Risk Factors"
       href: NHANES.html
     - text: "Resources"
       href: extra_resources.html
+    - text: "Final Report"
+      href: project_report.html
       
     - icon: fa-github fa-lg
       href: https://github.com/IamHJJ/p8105_final_project.github.io

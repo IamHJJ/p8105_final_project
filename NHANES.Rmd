@@ -25,7 +25,7 @@ Our study's primary objective is to analyze the NHANES dataset from 1999 to 2016
 # Data Cleaning
 
 ## import NHANES datafiles
-Imported demographic, HIV test, and sexual behavior dataframes 1999 - 2016. 
+The analyzed data sets was downloaded from the [National Health and Nutrition Examination Survey Website](https://wwwn.cdc.gov/nchs/nhanes/). Specifically, demographic, HIV test, and sexual behavior datas from 1999 to 2016 utilized to conducted the analysis. Participants aged between 20 and 49 with a completed survey were eligible and included to our study.
 ```{r}
 demo_list = 
   list.files(path = "NHANES/DEMO", full.names = TRUE) 
@@ -72,11 +72,6 @@ hiv_demo_sxq_df =
   map2(hiv_demo_list, sxq_list_output, ~join_pair(.x, .y)) |>
   bind_rows() 
 
-```
-
-Re-coded variables of interest:
-Restricted particpants's age between 20 and 49
-```{r}
 cleaned_joined_df = 
   hiv_demo_sxq_df |>
   filter(ridageyr >= 20 & ridageyr <= 49) |>
@@ -141,8 +136,6 @@ cleaned_joined_df =
 ```
 
 
-
-
 # Descriptive visualization of the potential risk factors
 To visualize the association between the selected potential risk factors and HIV test results, we specifically calculated the percent of participants whose HIV-antibody test showing (lbdhi or lbxhivc) ‘positive’ among all the participants who reported to have a ‘positive’ or ‘negative’ value in the antibody test. We further excluded the participants whose status is ‘missing’ or ‘indeterminate’ in the antibody test in our data visualization section.
 
@@ -188,7 +181,7 @@ combine_plot = function(bar, line, indicator){
 ```
 
 ## Race and the Percent of 'Positive' in HIV Antibody Test 
-```{r}
+```{r message = FALSE, warning=FALSE}
 bar_race = 
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
@@ -199,7 +192,7 @@ bar_race =
   ungroup() %>% 
   mutate(race = fct_reorder(race, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
-  plot_ly(x = ~race, y = ~hiv_percent, color = ~race, type = "bar", text = ~text_label, colors = "viridis")
+  plot_ly(x = ~race, y = ~hiv_percent, color = ~race, type = "bar", text = ~text_label)
 
 line_race =
   cleaned_joined_df %>% 
@@ -212,7 +205,7 @@ line_race =
   mutate(race = fct_reorder(race, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~race, type = "scatter", mode = "lines+markers",
-          text = ~text_label, colors = "viridis") 
+          text = ~text_label) 
 
 
 combine_race = combine_plot(bar_race, line_race, "Race")
@@ -226,7 +219,7 @@ From the two plots, we found that the mean age in each race and each year were a
 
 
 ## Sex and the Percent of 'Positive' in HIV Antibody Test 
-```{r}
+```{r message = FALSE, warning=FALSE}
 bar_gender = 
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
@@ -236,7 +229,7 @@ bar_gender =
             hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
-  plot_ly(x = ~gender, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label, colors = "viridis")
+  plot_ly(x = ~gender, y = ~hiv_percent, color = ~gender, type = "bar", text = ~text_label)
 
 
 line_gender = 
@@ -249,7 +242,7 @@ line_gender =
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~gender, type = "scatter", mode = "lines+markers",
-          text = ~text_label, colors = "viridis")
+          text = ~text_label)
 
 combine_gender = combine_plot(bar_gender, line_gender, "Gender")
 combine_gender
@@ -260,7 +253,7 @@ From the two plots, we found that the mean age in females appeared to be slightl
 
 
 ## Education Level and the Percent of 'Positive' in HIV Antibody Test 
-```{r}
+```{r message = FALSE, warning=FALSE}
 bar_edu = 
 cleaned_joined_df %>% 
   drop_na(hiv) %>% 
@@ -274,7 +267,7 @@ cleaned_joined_df %>%
                                          "Some college or AA degree",
                                          "College graduate or above"))) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
-  plot_ly(x = ~education, y = ~hiv_percent, color = ~education, type = "bar", text = ~text_label, colors = "viridis")
+  plot_ly(x = ~education, y = ~hiv_percent, color = ~education, type = "bar", text = ~text_label)
 
 
 line_edu =
@@ -291,7 +284,7 @@ line_edu =
                                          "College graduate or above"))) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~education, type = "scatter", mode = "lines+markers",
-          text = ~text_label, colors = "viridis") 
+          text = ~text_label) 
 
 
 combine_edu = combine_plot(bar_edu, line_edu, "Education")
@@ -303,7 +296,7 @@ From the two plots, we found that the mean age in each race and each year were a
 
 
 ## Marital status and the Percent of 'Positive' in HIV Antibody Test 
-```{r}
+```{r message = FALSE, warning=FALSE}
 bar_mar = 
   cleaned_joined_df %>% 
   drop_na(hiv) %>% 
@@ -314,7 +307,7 @@ bar_mar =
   ungroup() %>% 
   mutate(marriage = fct_reorder(marriage, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
-  plot_ly(x = ~marriage, y = ~hiv_percent, color = ~marriage, type = "bar", text = ~text_label, colors = "viridis") 
+  plot_ly(x = ~marriage, y = ~hiv_percent, color = ~marriage, type = "bar", text = ~text_label) 
 
 
 line_mar =
@@ -328,7 +321,7 @@ line_mar =
   mutate(marriage = fct_reorder(marriage, hiv_percent)) %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~marriage, type = "scatter", mode = "lines+markers",
-          text = ~text_label, colors = "viridis") 
+          text = ~text_label) 
 
 combine_mar = combine_plot(bar_mar, line_mar, "Marital Status")
 combine_mar
@@ -340,7 +333,7 @@ From the two plots, we found that the mean age in each marital status group and 
 
 
 ## Same-sex Sexual Behavior and the Percent of 'Positive' in HIV Antibody Test 
-```{r}
+```{r message = FALSE, warning=FALSE}
 bar_sexbehave = 
   cleaned_joined_df %>%
   drop_na(hiv) %>% 
@@ -352,7 +345,7 @@ bar_sexbehave =
             hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>% 
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
-  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~samesexcontact, type = "bar", text = ~text_label, colors = "viridis") 
+  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~samesexcontact, type = "bar", text = ~text_label) 
 
 line_sexbehave =
   cleaned_joined_df %>% 
@@ -366,7 +359,7 @@ line_sexbehave =
   ungroup() %>% 
   mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~samesexcontact, type = "scatter", mode = "lines+markers",
-          text = ~text_label, colors = "viridis") 
+          text = ~text_label) 
 
 
 combine_sexbehave = combine_plot(bar_sexbehave, line_sexbehave, "Sexual Behavior")
