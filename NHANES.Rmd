@@ -149,7 +149,7 @@ Then, we plot each bar chart illustrating the integrated (from 1999 to 2016) per
 We firstly wrote a function for creating the combined plot for each risk factor.
 ```{r}
 combine_plot = function(bar, line, indicator){
-  title_g = paste("The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by", indicator)
+  title_g = paste("Percent of HIV-Antibody Positive Patients from 1999 to 2016 by", indicator)
   
   combine_bar = 
     subplot(bar, line, margin = 0.1) %>% 
@@ -183,6 +183,8 @@ combine_plot = function(bar, line, indicator){
 }
 
 ```
+
+
 
 ## Race and the Percent of 'Positive' in HIV Antibody Test 
 ```{r message = FALSE, warning=FALSE}
@@ -373,9 +375,9 @@ The bar plot and the line plot indicated that the population has same-sex sexual
 From the two plots, we found that the mean age in the group that has same-sex sexual behavior appeared to be higher than the group without same-sex sexual behavior.
 
 
-## logistic regression
+# logistic regression
 
-### Set the reference group
+## Set the reference group
 ```{r}
 cleaned_regression_df= 
    cleaned_joined_df |> 
@@ -387,7 +389,7 @@ cleaned_regression_df=
          )
 ```
 
-### Bivariate analysis
+## Bivariate analysis
 ```{r}
 variables = c("age","gender","education","race","samesexcontact","marriage")
 
@@ -408,7 +410,7 @@ model_summaries |>
 Because I am conducting 6 logistic tests, the Bonferroni-corrected significance level would be 0.05/6 = 0.008. Variables `age`, `gender`, `race`, `samesexcontact`, `marriage` were found significant associated with HIV infection status, at 0.8% level of significance. Therefore, these variables were included to the final model.
 
 
-### The final model
+## The final model
 ```{r}
 fit_regression = cleaned_regression_df |> 
   glm(hiv_outcome ~ samesexcontact + gender + age + race + marriage, data = _, family = binomial()) 
@@ -430,7 +432,7 @@ fit_regression|>
 * These findings underscore the complex interplay of demographic factors in HIV risk and contribute valuable insights for targeted prevention and intervention strategies.
 
 
-### Bootstrap
+## Bootstrap
 
 ```{r warning = FALSE}
 bootstrap_df =
@@ -446,7 +448,7 @@ bootstrap_df =
 ```
 
 
-### Distribution of estimates under repeated sampling
+## Distribution of estimates under repeated sampling
 ```{r}
 bootstrap_df|> 
   filter(term == "age") |> 
@@ -464,7 +466,7 @@ bootstrap_df|>
 * This is the uncertainty that we would get in this dataset if we do repeated sampling
 
 
-### Bootstrap mean OR and 95% CI 
+## Bootstrap mean OR and 95% CI 
 ```{r}
 bootstrap_df|> 
   summarize(
