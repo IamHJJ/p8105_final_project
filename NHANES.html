@@ -296,26 +296,23 @@ Infection from 1999 to 2016</h1>
 </div>
 
 
-<div id="data-sources" class="section level2">
-<h2>Data Sources</h2>
+<div id="data-sources" class="section level1">
+<h1>Data Sources</h1>
 <p>The <a href="https://wwwn.cdc.gov/nchs/nhanes/">National Health and
-Nutrition Examination Survey</a> is a program of studies designed to
-assess the health and nutritional status of adults and children in the
-United States. The survey is unique in that it combines interviews and
-physical examinations. NHANES is a major program of the National Center
-for Health Statistics (NCHS). NCHS is part of the Centers for Disease
-Control and Prevention (CDC) and has the responsibility for producing
-vital and health statistics for the Nation.</p>
-<p>The NHANES interview includes demographic, socioeconomic, dietary,
-and health-related questions. The examination component consists of
-medical, dental, and physiological measurements, as well as laboratory
-tests administered by highly trained medical personnel. In this study,
-we used the demographic data, HIV testing, and sexual behavior data from
-1999 to 2016 to identify the potential sociodemographic factors
-associated with HIV infection status.</p>
+Nutrition Examination Survey</a> is designed to evaluate the health and
+nutritional status of both adults and children. In 1999, the NHANES
+study transitioned into a continuous format, enabling investigators to
+conduct longitudinal studies. NHANES encompasses both interview data and
+physical examination data, which involved information from different
+perspectives and fields, providing researchers with a comprehensive
+dataset to examine the prevalence and risk factors associated with
+various diseases. In this study, we used the demographic data, HIV
+testing, and sexual behavior data from 1999 to 2016 to identify the
+potential sociodemographic factors associated with HIV infection
+status.</p>
 </div>
-<div id="study-objectives" class="section level2">
-<h2>Study Objectives</h2>
+<div id="study-objectives" class="section level1">
+<h1>Study Objectives</h1>
 <p>Our study’s primary objective is to analyze the NHANES dataset from
 1999 to 2016 to identify sociodemographic factors associated with HIV
 infection rates in the United States. By examining variables such as
@@ -329,6 +326,8 @@ understanding of HIV epidemiology that could underpin targeted
 interventions and support the reduction of infection disparities across
 diverse population groups.</p>
 </div>
+<div id="data-cleaning" class="section level1">
+<h1>Data Cleaning</h1>
 <div id="import-nhanes-datafiles" class="section level2">
 <h2>import NHANES datafiles</h2>
 <p>Imported demographic, HIV test, and sexual behavior dataframes 1999 -
@@ -440,220 +439,296 @@ hiv_demo_sxq_df =
     (MSM &gt;= 1 &amp; MSM &lt;= 600) | (WSW &gt;= 1 &amp; WSW &lt;= 600) ~ 1
   )) |&gt;
   select(seqn, hiv, age, gender, race, education, marriage, year, samesexcontact)</code></pre>
-<p>Visualization - 1 Total number as y-axis value Across race</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
-  filter(hiv == &quot;Reactive&quot;) %&gt;% 
-  group_by(race, gender) %&gt;%
-  summarize(n = n(), age_mean = round(mean(age), 2)) %&gt;% 
-  ungroup() %&gt;% 
-  mutate(race = fct_reorder(race, n)) %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~race, y = ~n, color = ~gender, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-    layout(
-      xaxis = list(title = &quot;Race&quot;),
-      yaxis = list(title = &quot;Total Number of HIV Positive Patients&quot;),
-      title = &quot;The Total Number of HIV Positive Patients from 1999 to 2016 Across Races&quot;
-    )</code></pre>
-<pre><code>## `summarise()` has grouped output by
-## &#39;race&#39;. You can override using the
-## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-dc00a98c05dae1ca7a4f" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-dc00a98c05dae1ca7a4f">{"x":{"visdat":{"746ce9c54e9":["function () ","plotlyVisDat"]},"cur_data":"746ce9c54e9","attrs":{"746ce9c54e9":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Race","type":"category","categoryorder":"array","categoryarray":["Other Race - Including Multi-Racial","Other Hispanic","Mexican American","Non-Hispanic White","Non-Hispanic Black"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Number of HIV Positive Patients"},"title":"The Total Number of HIV Positive Patients from 1999 to 2016 Across Races","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Mexican American","Non-Hispanic Black","Non-Hispanic White","Other Hispanic","Other Race - Including Multi-Racial"],"y":[1,29,2,1,1],"text":["mean age: 40","mean age: 39.41","mean age: 37","mean age: 30","mean age: 47"],"type":"bar","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexican American","Non-Hispanic Black","Non-Hispanic White","Other Hispanic"],"y":[11,56,15,8],"text":["mean age: 35.36","mean age: 34.88","mean age: 38.27","mean age: 41.88"],"type":"bar","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization - 1-1 Total percent as y-axis value</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
+</div>
+</div>
+<div id="descriptive-visualization-of-the-potential-risk-factors"
+class="section level1">
+<h1>Descriptive visualization of the potential risk factors</h1>
+<p>To visualize the association between the selected potential risk
+factors and HIV test results, we specifically calculated the percent of
+participants whose HIV-antibody test showing (lbdhi or lbxhivc)
+‘positive’ among all the participants who reported to have a ‘positive’
+or ‘negative’ value in the antibody test. We further excluded the
+participants whose status is ‘missing’ or ‘indeterminate’ in the
+antibody test in our data visualization section.</p>
+<p>Then, we plot each bar chart illustrating the integrated (from 1999
+to 2016) percentage of ‘positive’ participants on the y-axis and the
+risk factor of interest on the x-axis, correlated with a line plot
+indicating the change of the ‘positive’ participants for each risk
+factor to assess the association between HIV and each risk factor in a
+rough way. Besides, the mean age of the positive clusters among each
+sub-cohort was also calculated for each characteristic/risk factor.</p>
+<div id="write-a-function-to-combine-bar-and-line-plot"
+class="section level2">
+<h2>Write a function to combine bar and line plot</h2>
+<p>We firstly wrote a function for creating the combined plot for each
+risk factor.</p>
+<pre class="r"><code>combine_plot = function(bar, line, indicator){
+  title_g = paste(&quot;The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by&quot;, indicator)
+  
+  combine_bar = 
+    subplot(bar, line, margin = 0.1) %&gt;% 
+    layout(title = title_g)
+  
+  annotations = list( 
+  list( 
+    x = 0.17,  
+    y = 0.98,  
+    text = &quot;Total Percent&quot;,  
+    xref = &quot;paper&quot;,  
+    yref = &quot;paper&quot;,  
+    xanchor = &quot;center&quot;,  
+    yanchor = &quot;bottom&quot;,  
+    showarrow = FALSE 
+  ),  
+  list( 
+    x = 0.86,  
+    y = 0.98,  
+    text = &quot;Percent by Year&quot;,  
+    xref = &quot;paper&quot;,  
+    yref = &quot;paper&quot;,  
+    xanchor = &quot;center&quot;,  
+    yanchor = &quot;bottom&quot;,  
+    showarrow = FALSE 
+  )) 
+  
+  combine_bar = combine_bar %&gt;% 
+  layout(annotations = annotations)
+  
+}</code></pre>
+</div>
+<div id="race-and-the-percent-of-positive-in-hiv-antibody-test"
+class="section level2">
+<h2>Race and the Percent of ‘Positive’ in HIV Antibody Test</h2>
+<pre class="r"><code>bar_race = 
+  cleaned_joined_df %&gt;% 
   drop_na(hiv) %&gt;% 
-  group_by(race, gender) %&gt;%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
+  group_by(race) %&gt;%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
   ungroup() %&gt;% 
   mutate(race = fct_reorder(race, hiv_percent)) %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~race, y = ~hiv_percent, color = ~gender, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-    layout(
-      xaxis = list(title = &quot;Race&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 Across Races&quot;
-    )</code></pre>
-<pre><code>## `summarise()` has grouped output by
-## &#39;race&#39;. You can override using the
-## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1bb69449341035a4515d" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-1bb69449341035a4515d">{"x":{"visdat":{"746c7dcb4ba9":["function () ","plotlyVisDat"]},"cur_data":"746c7dcb4ba9","attrs":{"746c7dcb4ba9":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Race","type":"category","categoryorder":"array","categoryarray":["Other Race - Including Multi-Racial","Non-Hispanic White","Mexican American","Other Hispanic","Non-Hispanic Black"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 Across Races","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Mexican American","Non-Hispanic Black","Non-Hispanic White","Other Hispanic","Other Race - Including Multi-Racial"],"y":[0.039,1.119,0.040000000000000001,0.094,0.089999999999999997],"text":["mean age: 33.52","mean age: 34.39","mean age: 34.34","mean age: 34.06","mean age: 34.39"],"type":"bar","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexican American","Non-Hispanic Black","Non-Hispanic White","Other Hispanic","Other Race - Including Multi-Racial"],"y":[0.48999999999999999,2.5350000000000001,0.33600000000000002,0.93500000000000005,0],"text":["mean age: 33.96","mean age: 34.27","mean age: 34.85","mean age: 34.41","mean age: 33.98"],"type":"bar","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 2: by year</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~race, y = ~hiv_percent, color = ~race, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;)
+
+line_race =
+  cleaned_joined_df %&gt;% 
   drop_na(hiv) %&gt;% 
-  group_by(year, gender) %&gt;% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
+  group_by(year, race) %&gt;% 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
   ungroup() %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~year, y = ~hiv_percent, color = ~gender, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
-          text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-  layout(
-      xaxis = list(title = &quot;Year&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016&quot;
-    )</code></pre>
+  mutate(race = fct_reorder(race, hiv_percent)) %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~year, y = ~hiv_percent, color = ~race, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
+          text = ~text_label, colors = &quot;viridis&quot;) </code></pre>
 <pre><code>## `summarise()` has grouped output by
 ## &#39;year&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-7376cb451e42f4e54cfe" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-7376cb451e42f4e54cfe">{"x":{"visdat":{"746c47812c":["function () ","plotlyVisDat"]},"cur_data":"746c47812c","attrs":{"746c47812c":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Year","type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.32500000000000001,0.48499999999999999,0.40899999999999997,0.28199999999999997,0.075999999999999998,0.25700000000000001,0.23400000000000001,0.20899999999999999,0.218],"mode":"lines+markers","text":["mean age: 33.6","mean age: 33.44","mean age: 33.73","mean age: 33","mean age: 34.98","mean age: 34.7","mean age: 34.29","mean age: 34.89","mean age: 34.69"],"type":"scatter","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.325,0.57899999999999996,0.91000000000000003,1.2050000000000001,0.89600000000000002,0.88200000000000001,0.71299999999999997,0.76300000000000001,0.33200000000000002],"mode":"lines+markers","text":["mean age: 34.5","mean age: 34.85","mean age: 33.86","mean age: 34.4","mean age: 34.82","mean age: 34.72","mean age: 33.91","mean age: 34.35","mean age: 34.38"],"type":"scatter","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 3: Across Education level</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
+<pre class="r"><code>combine_race = combine_plot(bar_race, line_race, &quot;Race&quot;)
+
+combine_race </code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-d451badbaf8e4330359e" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-d451badbaf8e4330359e">{"x":{"data":[{"x":["Other Race - Including Multi-Racial"],"y":[0.045999999999999999],"text":"mean age: 47, Positive HIV Percent: 0.046%","type":"bar","name":"Other Race - Including Multi-Racial","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Non-Hispanic White"],"y":[0.17999999999999999],"text":"mean age: 38.12, Positive HIV Percent: 0.18%","type":"bar","name":"Non-Hispanic White","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexican American"],"y":[0.25],"text":"mean age: 35.75, Positive HIV Percent: 0.25%","type":"bar","name":"Mexican American","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Other Hispanic"],"y":[0.46899999999999997],"text":"mean age: 40.56, Positive HIV Percent: 0.469%","type":"bar","name":"Other Hispanic","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Non-Hispanic Black"],"y":[1.7709999999999999],"text":"mean age: 36.42, Positive HIV Percent: 1.771%","type":"bar","name":"Non-Hispanic Black","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,0,0,0,0.83999999999999997,0,0,0,0],"mode":"lines+markers","text":["mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: 47, Positive HIV Percent: 0.84%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Other Race - Including Multi-Racial","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.22500000000000001,0.083000000000000004,0.27600000000000002,0.35999999999999999,0.091999999999999998,0.076999999999999999,0.111,0.090999999999999998,0.39600000000000002],"mode":"lines+markers","text":["mean age: 33.5, Positive HIV Percent: 0.225%","mean age: 27, Positive HIV Percent: 0.083%","mean age: 37.33, Positive HIV Percent: 0.276%","mean age: 46.25, Positive HIV Percent: 0.36%","mean age: 42, Positive HIV Percent: 0.092%","mean age: 22, Positive HIV Percent: 0.077%","mean age: 29, Positive HIV Percent: 0.111%","mean age: 41, Positive HIV Percent: 0.091%","mean age: 41, Positive HIV Percent: 0.396%"],"type":"scatter","name":"Non-Hispanic White","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"line":{"color":"rgba(59,82,139,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,0.58599999999999997,0.40100000000000002,0.156,0.184,0.503,0.32800000000000001,0,0],"mode":"lines+markers","text":["mean age: NaN, Positive HIV Percent: 0%","mean age: 37.25, Positive HIV Percent: 0.586%","mean age: 28.5, Positive HIV Percent: 0.401%","mean age: 32, Positive HIV Percent: 0.156%","mean age: 44, Positive HIV Percent: 0.184%","mean age: 34.67, Positive HIV Percent: 0.503%","mean age: 43, Positive HIV Percent: 0.328%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Mexican American","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"line":{"color":"rgba(33,144,141,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,1.575,1.1240000000000001,0.88500000000000001,0.65800000000000003,0.60199999999999998,0.433,0,0],"mode":"lines+markers","text":["mean age: NaN, Positive HIV Percent: 0%","mean age: 36, Positive HIV Percent: 1.575%","mean age: 35, Positive HIV Percent: 1.124%","mean age: 39, Positive HIV Percent: 0.885%","mean age: 46.5, Positive HIV Percent: 0.658%","mean age: 40.5, Positive HIV Percent: 0.602%","mean age: 45, Positive HIV Percent: 0.433%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Other Hispanic","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"line":{"color":"rgba(93,200,99,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[3.4009999999999998,1.2889999999999999,1.6419999999999999,2,1.417,2.028,1.4930000000000001,2.2989999999999999,0.71899999999999997],"mode":"lines+markers","text":["mean age: 39.73, Positive HIV Percent: 3.401%","mean age: 37.71, Positive HIV Percent: 1.289%","mean age: 36.22, Positive HIV Percent: 1.642%","mean age: 36.08, Positive HIV Percent: 2%","mean age: 33, Positive HIV Percent: 1.417%","mean age: 37.5, Positive HIV Percent: 2.028%","mean age: 37.33, Positive HIV Percent: 1.493%","mean age: 33.58, Positive HIV Percent: 2.299%","mean age: 33, Positive HIV Percent: 0.719%"],"type":"scatter","name":"Non-Hispanic Black","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x2","yaxis":"y2","frame":null}],"layout":{"xaxis":{"domain":[0,0.40000000000000002],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["Other Race - Including Multi-Racial","Non-Hispanic White","Mexican American","Other Hispanic","Non-Hispanic Black"],"anchor":"y"},"xaxis2":{"domain":[0.59999999999999998,1],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"anchor":"y2"},"yaxis2":{"domain":[0,1],"automargin":true,"anchor":"x2"},"yaxis":{"domain":[0,1],"automargin":true,"anchor":"x"},"annotations":[{"x":0.17000000000000001,"y":0.97999999999999998,"text":"Total Percent","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false},{"x":0.85999999999999999,"y":0.97999999999999998,"text":"Percent by Year","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false}],"shapes":[],"images":[],"margin":{"b":40,"l":60,"t":25,"r":10},"hovermode":"closest","showlegend":true,"title":"The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by Race"},"attrs":{"5ca45f885294":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"5ca427ea3627":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>The bar plot shown the percent of patients with a positive result
+from the HIV antibody test in each race when we integrated all datasets
+from 1999 to 2016. It indicated that the race Non-Hispanic Black has
+reported the highest percent, while the ‘Other Race’ had the lowest
+percent. From the bar plot, disparity among the races. The line plot
+shows the change in the reported, positive percent of HIV-antibody test
+from 1999 to 2016. We could observe that the trend in each race are
+different, but the Non-Hispanic Black and Other Hispanic had a
+decreasing trend over 1999 to 2016. From the two plots, we found that
+the mean age in each race and each year were also different.</p>
+</div>
+<div id="sex-and-the-percent-of-positive-in-hiv-antibody-test"
+class="section level2">
+<h2>Sex and the Percent of ‘Positive’ in HIV Antibody Test</h2>
+<pre class="r"><code>bar_gender = 
+  cleaned_joined_df %&gt;% 
   drop_na(hiv) %&gt;% 
-  group_by(education, gender) %&gt;%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
+  group_by(gender) %&gt;%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
+  ungroup() %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~gender, y = ~hiv_percent, color = ~gender, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;)
+
+
+line_gender = 
+  cleaned_joined_df %&gt;% 
+  drop_na(hiv) %&gt;% 
+  group_by(year, gender) %&gt;% 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
+  ungroup() %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~year, y = ~hiv_percent, color = ~gender, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
+          text = ~text_label, colors = &quot;viridis&quot;)</code></pre>
+<pre><code>## `summarise()` has grouped output by
+## &#39;year&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre class="r"><code>combine_gender = combine_plot(bar_gender, line_gender, &quot;Gender&quot;)
+combine_gender</code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e4b61e2e0df79e031539" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e4b61e2e0df79e031539">{"x":{"data":[{"x":["Female"],"y":[0.27700000000000002],"text":"mean age: 39.24, Positive HIV Percent: 0.277%","type":"bar","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Male"],"y":[0.83199999999999996],"text":"mean age: 36.12, Positive HIV Percent: 0.832%","type":"bar","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.32500000000000001,0.48499999999999999,0.40899999999999997,0.28199999999999997,0.075999999999999998,0.25700000000000001,0.23400000000000001,0.20899999999999999,0.218],"mode":"lines+markers","text":["mean age: 40.75, Positive HIV Percent: 0.325%","mean age: 36.71, Positive HIV Percent: 0.485%","mean age: 35, Positive HIV Percent: 0.409%","mean age: 42.75, Positive HIV Percent: 0.282%","mean age: 47, Positive HIV Percent: 0.076%","mean age: 39.5, Positive HIV Percent: 0.257%","mean age: 44.67, Positive HIV Percent: 0.234%","mean age: 43, Positive HIV Percent: 0.209%","mean age: 33.33, Positive HIV Percent: 0.218%"],"type":"scatter","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.325,0.57899999999999996,0.91000000000000003,1.2050000000000001,0.89600000000000002,0.88200000000000001,0.71299999999999997,0.76300000000000001,0.33200000000000002],"mode":"lines+markers","text":["mean age: 38.46, Positive HIV Percent: 1.325%","mean age: 36.43, Positive HIV Percent: 0.579%","mean age: 35.5, Positive HIV Percent: 0.91%","mean age: 37, Positive HIV Percent: 1.205%","mean age: 37.27, Positive HIV Percent: 0.896%","mean age: 35.33, Positive HIV Percent: 0.882%","mean age: 35.44, Positive HIV Percent: 0.713%","mean age: 31.5, Positive HIV Percent: 0.763%","mean age: 38.75, Positive HIV Percent: 0.332%"],"type":"scatter","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x2","yaxis":"y2","frame":null}],"layout":{"xaxis":{"domain":[0,0.40000000000000002],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["Female","Male"],"anchor":"y"},"xaxis2":{"domain":[0.59999999999999998,1],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"anchor":"y2"},"yaxis2":{"domain":[0,1],"automargin":true,"anchor":"x2"},"yaxis":{"domain":[0,1],"automargin":true,"anchor":"x"},"annotations":[{"x":0.17000000000000001,"y":0.97999999999999998,"text":"Total Percent","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false},{"x":0.85999999999999999,"y":0.97999999999999998,"text":"Percent by Year","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false}],"shapes":[],"images":[],"margin":{"b":40,"l":60,"t":25,"r":10},"hovermode":"closest","showlegend":true,"title":"The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by Gender"},"attrs":{"5ca445c11703":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"5ca4722f1a00":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>The bar plot and the line plot indicated that male has reported much
+higher percent than females. From the line plot, we observed that the
+positive percent were decreasing in each sex. From the two plots, we
+found that the mean age in females appeared to be slightly higher than
+males among the patients with a positive test result.</p>
+</div>
+<div
+id="education-level-and-the-percent-of-positive-in-hiv-antibody-test"
+class="section level2">
+<h2>Education Level and the Percent of ‘Positive’ in HIV Antibody
+Test</h2>
+<pre class="r"><code>bar_edu = 
+cleaned_joined_df %&gt;% 
+  drop_na(hiv) %&gt;% 
+  group_by(education) %&gt;%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
             hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
   ungroup() %&gt;% 
   mutate(education = forcats::fct_relevel(education, c(&quot;Less than 9th grade&quot;, &quot;9-11th grade&quot;, 
                                          &quot;High school graduate or equivalent&quot;, 
                                          &quot;Some college or AA degree&quot;,
                                          &quot;College graduate or above&quot;))) %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~education, y = ~hiv_percent, color = ~gender, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-    layout(
-      xaxis = list(title = &quot;Education level&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 Across Education Level&quot;
-    )</code></pre>
-<pre><code>## `summarise()` has grouped output by
-## &#39;education&#39;. You can override using
-## the `.groups` argument.</code></pre>
-<pre><code>## Warning: Ignoring 2 observations</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-eda52a5c4af4a50df957" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-eda52a5c4af4a50df957">{"x":{"visdat":{"746c3c555b6d":["function () ","plotlyVisDat"]},"cur_data":"746c3c555b6d","attrs":{"746c3c555b6d":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Education level","type":"category","categoryorder":"array","categoryarray":["Less than 9th grade","9-11th grade","High school graduate or equivalent","Some college or AA degree","College graduate or above"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 Across Education Level","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["9-11th grade","College graduate or above","High school graduate or equivalent","Less than 9th grade","Some college or AA degree"],"y":[0.60999999999999999,0.068000000000000005,0.39500000000000002,0.216,0.19600000000000001],"text":["mean age: 33.77","mean age: 35.38","mean age: 33.63","mean age: 36.24","mean age: 33.31"],"type":"bar","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["9-11th grade","College graduate or above","High school graduate or equivalent","Less than 9th grade","Some college or AA degree"],"y":[1.012,0.56200000000000006,0.72599999999999998,0.45300000000000001,1.1359999999999999],"text":["mean age: 33.73","mean age: 35.96","mean age: 34.07","mean age: 36.19","mean age: 33.49"],"type":"bar","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 4: Across marital status</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
-  drop_na(hiv) %&gt;% 
-  group_by(marriage, gender) %&gt;%
-  summarize(total_par = n(), age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
-  ungroup() %&gt;% 
-  mutate(marriage = fct_reorder(marriage, hiv_percent)) %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~marriage, y = ~hiv_percent, color = ~gender, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-    layout(
-      xaxis = list(title = &quot;Marital Status&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 Across Marital Status&quot;
-    )</code></pre>
-<pre><code>## `summarise()` has grouped output by
-## &#39;marriage&#39;. You can override using
-## the `.groups` argument.</code></pre>
-<pre><code>## Warning: Ignoring 2 observations</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-782ccb258556e8d1c202" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-782ccb258556e8d1c202">{"x":{"visdat":{"746c3bcd3f3b":["function () ","plotlyVisDat"]},"cur_data":"746c3bcd3f3b","attrs":{"746c3bcd3f3b":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Marital Status","type":"category","categoryorder":"array","categoryarray":["Married","Divorced","Living with partner","Never married","Separated","Widowed"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 Across Marital Status","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Divorced","Living with partner","Married","Never married","Separated","Widowed"],"y":[0.29299999999999998,0.379,0.17999999999999999,0.45700000000000002,0.187,0],"text":["mean age: 39.73","mean age: 31.23","mean age: 36.06","mean age: 28.95","mean age: 37.44","mean age: 42.97"],"type":"bar","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Divorced","Living with partner","Married","Never married","Separated","Widowed"],"y":[0.78200000000000003,0.92300000000000004,0.307,1.45,1.8320000000000001,5.556],"text":["mean age: 41.01","mean age: 32.39","mean age: 37.66","mean age: 28.41","mean age: 37.1","mean age: 40.56"],"type":"bar","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 5: Sexual behavior</p>
-<pre class="r"><code>cleaned_joined_df %&gt;%
-  drop_na(hiv) %&gt;% 
-  mutate(samesexcontact = recode(samesexcontact, &quot;0&quot; = &quot;No&quot;, 
-                                  &quot;1&quot; = &quot;Yes&quot;)) %&gt;% 
-  group_by(samesexcontact, gender) %&gt;% 
-  summarize(total_par = n(), age_mean = round(mean(age), 2), hiv_num = sum(hiv == &quot;Reactive&quot;),
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;% 
-  ungroup() %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~gender, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-    layout(
-      xaxis = list(title = &quot;Same Sex Sexual Behavior&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 Across Sexual Behavior&quot;
-    )</code></pre>
-<pre><code>## `summarise()` has grouped output by
-## &#39;samesexcontact&#39;. You can override
-## using the `.groups` argument.</code></pre>
-<pre><code>## Warning: Ignoring 2 observations</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e8703498ae6579be0932" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-e8703498ae6579be0932">{"x":{"visdat":{"746c33e7468f":["function () ","plotlyVisDat"]},"cur_data":"746c33e7468f","attrs":{"746c33e7468f":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Same Sex Sexual Behavior","type":"category","categoryorder":"array","categoryarray":["No","Yes"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 Across Sexual Behavior","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["No","Yes"],"y":[0.34799999999999998,0.86199999999999999],"text":["mean age: 33.8","mean age: 30.42"],"type":"bar","name":"Female","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["No","Yes"],"y":[0.64100000000000001,16.544],"text":["mean age: 34.63","mean age: 33.99"],"type":"bar","name":"Male","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 6: by year, stratified by education level instead of
-gender</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~education, y = ~hiv_percent, color = ~education, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;)
+
+
+line_edu =
+  cleaned_joined_df %&gt;% 
   drop_na(hiv) %&gt;% 
   group_by(year, education) %&gt;% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
   ungroup() %&gt;% 
   mutate(education = forcats::fct_relevel(education, c(&quot;Less than 9th grade&quot;, &quot;9-11th grade&quot;, 
                                          &quot;High school graduate or equivalent&quot;, 
                                          &quot;Some college or AA degree&quot;,
                                          &quot;College graduate or above&quot;))) %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~education, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
-          text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-  layout(
-      xaxis = list(title = &quot;Year&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 by Education Level&quot;
-    )</code></pre>
+          text = ~text_label, colors = &quot;viridis&quot;) </code></pre>
 <pre><code>## `summarise()` has grouped output by
 ## &#39;year&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-d2eb932acddefe5e8bb1" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-d2eb932acddefe5e8bb1">{"x":{"visdat":{"746c256c311d":["function () ","plotlyVisDat"]},"cur_data":"746c256c311d","attrs":{"746c256c311d":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Year","type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 by Education Level","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.437,0.35999999999999999,0,0.43099999999999999,0.495,0.38500000000000001,0.80600000000000005,0,0],"mode":"lines+markers","text":["mean age: 35.63","mean age: 35.03","mean age: 35.82","mean age: 34.25","mean age: 36.92","mean age: 36.98","mean age: 37.41","mean age: 38.44","mean age: 37.28"],"type":"scatter","name":"Less than 9th grade","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.345,0.92200000000000004,0.53900000000000003,1.4890000000000001,0.82799999999999996,0.64200000000000002,0.61699999999999999,0.54300000000000004,0],"mode":"lines+markers","text":["mean age: 33.74","mean age: 33.05","mean age: 32.24","mean age: 32.05","mean age: 34.12","mean age: 34.65","mean age: 35.13","mean age: 33.95","mean age: 35.28"],"type":"scatter","name":"9-11th grade","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"line":{"color":"rgba(59,82,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.191,0.46899999999999997,1.631,0,0.63400000000000001,0.89800000000000002,0.60399999999999998,0.16600000000000001,0.374],"mode":"lines+markers","text":["mean age: 33.34","mean age: 33.23","mean age: 34.2","mean age: 33.18","mean age: 34.45","mean age: 33.88","mean age: 34.38","mean age: 34.27","mean age: 33.78"],"type":"scatter","name":"High school graduate or equivalent","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"line":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.1930000000000001,0.51700000000000002,0.27800000000000002,1.0840000000000001,0.26900000000000002,0.224,0.58199999999999996,0.86099999999999999,0.48099999999999998],"mode":"lines+markers","text":["mean age: 32.87","mean age: 34.01","mean age: 33.56","mean age: 33","mean age: 34.3","mean age: 33.76","mean age: 32","mean age: 33.43","mean age: 33.58"],"type":"scatter","name":"Some college or AA degree","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"line":{"color":"rgba(93,200,99,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.23699999999999999,0.38200000000000001,0.215,0.373,0.20399999999999999,0.64000000000000001,0.13500000000000001,0.27600000000000002,0.13700000000000001],"mode":"lines+markers","text":["mean age: 35.81","mean age: 35.58","mean age: 34.19","mean age: 36.01","mean age: 36.35","mean age: 36.02","mean age: 35.35","mean age: 36.19","mean age: 35.16"],"type":"scatter","name":"College graduate or above","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 7: by year, stratified by race</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
+<pre class="r"><code>combine_edu = combine_plot(bar_edu, line_edu, &quot;Education&quot;)</code></pre>
+<pre><code>## Warning: Ignoring 1 observations</code></pre>
+<pre class="r"><code>combine_edu </code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-c8ec0c1bd8b787f458aa" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-c8ec0c1bd8b787f458aa">{"x":{"data":[{"x":["Less than 9th grade"],"y":[0.33200000000000002],"text":"mean age: 36.67, Positive HIV Percent: 0.332%","type":"bar","name":"Less than 9th grade","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["9-11th grade"],"y":[0.81000000000000005],"text":"mean age: 37.1, Positive HIV Percent: 0.81%","type":"bar","name":"9-11th grade","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["High school graduate or equivalent"],"y":[0.56699999999999995],"text":"mean age: 36.8, Positive HIV Percent: 0.567%","type":"bar","name":"High school graduate or equivalent","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Some college or AA degree"],"y":[0.59999999999999998],"text":"mean age: 37.23, Positive HIV Percent: 0.6%","type":"bar","name":"Some college or AA degree","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["College graduate or above"],"y":[0.28599999999999998],"text":"mean age: 35.8, Positive HIV Percent: 0.286%","type":"bar","name":"College graduate or above","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.437,0.35999999999999999,0,0.43099999999999999,0.495,0.38500000000000001,0.80600000000000005,0,0],"mode":"lines+markers","text":["mean age: 30, Positive HIV Percent: 0.437%","mean age: 30, Positive HIV Percent: 0.36%","mean age: NaN, Positive HIV Percent: 0%","mean age: 39, Positive HIV Percent: 0.431%","mean age: 44, Positive HIV Percent: 0.495%","mean age: 34, Positive HIV Percent: 0.385%","mean age: 43, Positive HIV Percent: 0.806%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Less than 9th grade","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.345,0.92200000000000004,0.53900000000000003,1.4890000000000001,0.82799999999999996,0.64200000000000002,0.61699999999999999,0.54300000000000004,0],"mode":"lines+markers","text":["mean age: 41.33, Positive HIV Percent: 1.345%","mean age: 37, Positive HIV Percent: 0.922%","mean age: 27, Positive HIV Percent: 0.539%","mean age: 37, Positive HIV Percent: 1.489%","mean age: 38, Positive HIV Percent: 0.828%","mean age: 36, Positive HIV Percent: 0.642%","mean age: 37, Positive HIV Percent: 0.617%","mean age: 35, Positive HIV Percent: 0.543%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"9-11th grade","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"line":{"color":"rgba(59,82,139,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.191,0.46899999999999997,1.631,0,0.63400000000000001,0.89800000000000002,0.60399999999999998,0.16600000000000001,0.374],"mode":"lines+markers","text":["mean age: 45, Positive HIV Percent: 0.191%","mean age: 37.33, Positive HIV Percent: 0.469%","mean age: 37.9, Positive HIV Percent: 1.631%","mean age: NaN, Positive HIV Percent: 0%","mean age: 38, Positive HIV Percent: 0.634%","mean age: 36.17, Positive HIV Percent: 0.898%","mean age: 40.67, Positive HIV Percent: 0.604%","mean age: 27, Positive HIV Percent: 0.166%","mean age: 25, Positive HIV Percent: 0.374%"],"type":"scatter","name":"High school graduate or equivalent","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"line":{"color":"rgba(33,144,141,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.1930000000000001,0.51700000000000002,0.27800000000000002,1.0840000000000001,0.26900000000000002,0.224,0.58199999999999996,0.86099999999999999,0.48099999999999998],"mode":"lines+markers","text":["mean age: 36.71, Positive HIV Percent: 1.193%","mean age: 38.25, Positive HIV Percent: 0.517%","mean age: 28.5, Positive HIV Percent: 0.278%","mean age: 39.89, Positive HIV Percent: 1.084%","mean age: 35, Positive HIV Percent: 0.269%","mean age: 32.5, Positive HIV Percent: 0.224%","mean age: 36.4, Positive HIV Percent: 0.582%","mean age: 35, Positive HIV Percent: 0.861%","mean age: 44.5, Positive HIV Percent: 0.481%"],"type":"scatter","name":"Some college or AA degree","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"line":{"color":"rgba(93,200,99,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.23699999999999999,0.38200000000000001,0.215,0.373,0.20399999999999999,0.64000000000000001,0.13500000000000001,0.27600000000000002,0.13700000000000001],"mode":"lines+markers","text":["mean age: 36, Positive HIV Percent: 0.237%","mean age: 34.5, Positive HIV Percent: 0.382%","mean age: 40, Positive HIV Percent: 0.215%","mean age: 34.5, Positive HIV Percent: 0.373%","mean age: 39, Positive HIV Percent: 0.204%","mean age: 39.5, Positive HIV Percent: 0.64%","mean age: 32, Positive HIV Percent: 0.135%","mean age: 33.5, Positive HIV Percent: 0.276%","mean age: 27, Positive HIV Percent: 0.137%"],"type":"scatter","name":"College graduate or above","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x2","yaxis":"y2","frame":null}],"layout":{"xaxis":{"domain":[0,0.40000000000000002],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["Less than 9th grade","9-11th grade","High school graduate or equivalent","Some college or AA degree","College graduate or above"],"anchor":"y"},"xaxis2":{"domain":[0.59999999999999998,1],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"anchor":"y2"},"yaxis2":{"domain":[0,1],"automargin":true,"anchor":"x2"},"yaxis":{"domain":[0,1],"automargin":true,"anchor":"x"},"annotations":[{"x":0.17000000000000001,"y":0.97999999999999998,"text":"Total Percent","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false},{"x":0.85999999999999999,"y":0.97999999999999998,"text":"Percent by Year","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false}],"shapes":[],"images":[],"margin":{"b":40,"l":60,"t":25,"r":10},"hovermode":"closest","showlegend":true,"title":"The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by Education"},"attrs":{"5ca43821345f":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"5ca456846a27":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>The bar plot indicated that the group with education level of ‘9-11th
+grade’ has reported the highest percent, while the ‘College graduate or
+above’ had the lowest percent; disparity among the education was also
+observed. From the line plot, we observed that the trend over 1999 to
+2016 in each education level are different, but with a decreasing
+overall trend. From the two plots, we found that the mean age in each
+race and each year were also different, and it is hard to find a
+trend.</p>
+</div>
+<div
+id="marital-status-and-the-percent-of-positive-in-hiv-antibody-test"
+class="section level2">
+<h2>Marital status and the Percent of ‘Positive’ in HIV Antibody
+Test</h2>
+<pre class="r"><code>bar_mar = 
+  cleaned_joined_df %&gt;% 
   drop_na(hiv) %&gt;% 
-  group_by(year, race) %&gt;% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
+  group_by(marriage) %&gt;%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
   ungroup() %&gt;% 
-  mutate(race = fct_reorder(race, hiv_percent)) %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
-  plot_ly(x = ~year, y = ~hiv_percent, color = ~race, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
-          text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-  layout(
-      xaxis = list(title = &quot;Year&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 by Race&quot;
-    )</code></pre>
-<pre><code>## `summarise()` has grouped output by
-## &#39;year&#39;. You can override using the
-## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-ac337ebfd308cb8ed215" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-ac337ebfd308cb8ed215">{"x":{"visdat":{"746c714c4329":["function () ","plotlyVisDat"]},"cur_data":"746c714c4329","attrs":{"746c714c4329":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Year","type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 by Race","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,0,0,0,0.83999999999999997,0,0,0,0],"mode":"lines+markers","text":["mean age: 32.78","mean age: 32.32","mean age: 31.91","mean age: 35.13","mean age: 34.67","mean age: 33.9","mean age: 33.9","mean age: 34.81","mean age: 34.76"],"type":"scatter","name":"Other Race - Including Multi-Racial","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.22500000000000001,0.083000000000000004,0.27600000000000002,0.35999999999999999,0.091999999999999998,0.076999999999999999,0.111,0.090999999999999998,0.39600000000000002],"mode":"lines+markers","text":["mean age: 33.85","mean age: 34.47","mean age: 34.03","mean age: 34","mean age: 35.85","mean age: 35.07","mean age: 34.76","mean age: 34.52","mean age: 34.43"],"type":"scatter","name":"Non-Hispanic White","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"line":{"color":"rgba(59,82,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,0.58599999999999997,0.40100000000000002,0.156,0.184,0.503,0.32800000000000001,0,0],"mode":"lines+markers","text":["mean age: 33.7","mean age: 33.17","mean age: 33.54","mean age: 32.4","mean age: 33.55","mean age: 34.41","mean age: 34.43","mean age: 35.25","mean age: 34.16"],"type":"scatter","name":"Mexican American","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"line":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,1.575,1.1240000000000001,0.88500000000000001,0.65800000000000003,0.60199999999999998,0.433,0,0],"mode":"lines+markers","text":["mean age: 32.52","mean age: 34.47","mean age: 33.91","mean age: 32.58","mean age: 34.53","mean age: 35.03","mean age: 33.42","mean age: 34.77","mean age: 34.59"],"type":"scatter","name":"Other Hispanic","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"line":{"color":"rgba(93,200,99,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[3.4009999999999998,1.2889999999999999,1.6419999999999999,2,1.417,2.028,1.4930000000000001,2.2989999999999999,0.71899999999999997],"mode":"lines+markers","text":["mean age: 35.49","mean age: 34.62","mean age: 33.86","mean age: 34.17","mean age: 34.6","mean age: 34.23","mean age: 33.37","mean age: 34.16","mean age: 34.85"],"type":"scatter","name":"Non-Hispanic Black","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 8: by year, stratified by marital status</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
+  mutate(marriage = fct_reorder(marriage, hiv_percent)) %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~marriage, y = ~hiv_percent, color = ~marriage, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) 
+
+
+line_mar =
+  cleaned_joined_df %&gt;% 
   drop_na(hiv, marriage) %&gt;% 
   group_by(year, marriage) %&gt;% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
   ungroup() %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
+  mutate(marriage = fct_reorder(marriage, hiv_percent)) %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~marriage, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
-          text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-  layout(
-      xaxis = list(title = &quot;Year&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 by Marital Status&quot;
-    )</code></pre>
+          text = ~text_label, colors = &quot;viridis&quot;) </code></pre>
 <pre><code>## `summarise()` has grouped output by
 ## &#39;year&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-7b20b0c7ba05a3676012" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-7b20b0c7ba05a3676012">{"x":{"visdat":{"746c483e69c":["function () ","plotlyVisDat"]},"cur_data":"746c483e69c","attrs":{"746c483e69c":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Year","type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 by Marital Status","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.333,0.60199999999999998,1.093,1.266,0.46700000000000003,0,0,0,0],"mode":"lines+markers","text":["mean age: 39.83","mean age: 39.85","mean age: 39.79","mean age: 39.83","mean age: 40.69","mean age: 40.13","mean age: 40.37","mean age: 40.8","mean age: 40.46"],"type":"scatter","name":"Divorced","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.4179999999999999,0,1.2769999999999999,1.4790000000000001,1.0069999999999999,0.80000000000000004,0,0.32400000000000001,0],"mode":"lines+markers","text":["mean age: 31.79","mean age: 31.97","mean age: 31.48","mean age: 31.39","mean age: 32.44","mean age: 31.5","mean age: 32.43","mean age: 31.47","mean age: 31.86"],"type":"scatter","name":"Living with partner","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"line":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.19500000000000001,0.20399999999999999,0.17499999999999999,0.28899999999999998,0.24199999999999999,0.36599999999999999,0.26500000000000001,0.14899999999999999,0.248],"mode":"lines+markers","text":["mean age: 35.73","mean age: 36.01","mean age: 36.01","mean age: 35.44","mean age: 37.45","mean age: 37.75","mean age: 37.31","mean age: 37.82","mean age: 37.55"],"type":"scatter","name":"Married","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"line":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.143,1.3680000000000001,0.91200000000000003,1.1399999999999999,0.58699999999999997,0.75900000000000001,1.0609999999999999,1.252,0.54600000000000004],"mode":"lines+markers","text":["mean age: 28.7","mean age: 28.33","mean age: 28.41","mean age: 28.69","mean age: 28.94","mean age: 28.46","mean age: 28.75","mean age: 28.66","mean age: 29.07"],"type":"scatter","name":"Never married","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"line":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.923,1.01,1.266,0,1,0.90100000000000002,0,0,0],"mode":"lines+markers","text":["mean age: 36.6","mean age: 38.08","mean age: 37.05","mean age: 36.51","mean age: 37.45","mean age: 38.81","mean age: 37.67","mean age: 35.11","mean age: 37.84"],"type":"scatter","name":"Separated","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"line":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,0,5,0,0,5,0,0,0],"mode":"lines+markers","text":["mean age: 41.12","mean age: 41.27","mean age: 42.8","mean age: 42.6","mean age: 43.94","mean age: 42","mean age: 42.33","mean age: 43.33","mean age: 42.28"],"type":"scatter","name":"Widowed","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>Visualization 9: by year, stratified by Sexual behavior</p>
-<pre class="r"><code>cleaned_joined_df %&gt;% 
-  drop_na(hiv, samesexcontact) %&gt;% 
-  mutate(samesexcontact = recode(samesexcontact, &quot;0&quot; = &quot;No&quot;, 
-                                  &quot;1&quot; = &quot;Yes&quot;)) %&gt;% 
-  group_by(year, samesexcontact) %&gt;% 
-  summarize(age_mean = round(mean(age), 2), 
-            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / sum(hiv != &quot;Reactive&quot;, hiv == &quot;Reactive&quot;) * 100, 3)) %&gt;%
+<pre class="r"><code>combine_mar = combine_plot(bar_mar, line_mar, &quot;Marital Status&quot;)</code></pre>
+<pre><code>## Warning: Ignoring 1 observations</code></pre>
+<pre class="r"><code>combine_mar</code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-f9f4854fc37bd9091d19" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-f9f4854fc37bd9091d19">{"x":{"data":[{"x":["Married"],"y":[0.23899999999999999],"text":"mean age: 41.26, Positive HIV Percent: 0.239%","type":"bar","name":"Married","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Divorced"],"y":[0.48099999999999998],"text":"mean age: 43.62, Positive HIV Percent: 0.481%","type":"bar","name":"Divorced","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Living with partner"],"y":[0.64900000000000002],"text":"mean age: 36.82, Positive HIV Percent: 0.649%","type":"bar","name":"Living with partner","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Separated"],"y":[0.74299999999999999],"text":"mean age: 40.17, Positive HIV Percent: 0.743%","type":"bar","name":"Separated","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Never married"],"y":[0.96699999999999997],"text":"mean age: 34.13, Positive HIV Percent: 0.967%","type":"bar","name":"Never married","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Widowed"],"y":[1.361],"text":"mean age: 36.5, Positive HIV Percent: 1.361%","type":"bar","name":"Widowed","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0,0,5,0,0,5,0,0,0],"mode":"lines+markers","text":["mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: 28, Positive HIV Percent: 5%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: 45, Positive HIV Percent: 5%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Widowed","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.19500000000000001,0.20399999999999999,0.17499999999999999,0.28899999999999998,0.24199999999999999,0.36599999999999999,0.26500000000000001,0.14899999999999999,0.248],"mode":"lines+markers","text":["mean age: 43.5, Positive HIV Percent: 0.195%","mean age: 42.67, Positive HIV Percent: 0.204%","mean age: 40, Positive HIV Percent: 0.175%","mean age: 41.75, Positive HIV Percent: 0.289%","mean age: 42.33, Positive HIV Percent: 0.242%","mean age: 38, Positive HIV Percent: 0.366%","mean age: 41.67, Positive HIV Percent: 0.265%","mean age: 43.5, Positive HIV Percent: 0.149%","mean age: 41, Positive HIV Percent: 0.248%"],"type":"scatter","name":"Married","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"line":{"color":"rgba(65,68,135,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.333,0.60199999999999998,1.093,1.266,0.46700000000000003,0,0,0,0],"mode":"lines+markers","text":["mean age: 47, Positive HIV Percent: 1.333%","mean age: 40, Positive HIV Percent: 0.602%","mean age: 44, Positive HIV Percent: 1.093%","mean age: 39, Positive HIV Percent: 1.266%","mean age: 49, Positive HIV Percent: 0.467%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Divorced","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"line":{"color":"rgba(42,120,142,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.4179999999999999,0,1.2769999999999999,1.4790000000000001,1.0069999999999999,0.80000000000000004,0,0.32400000000000001,0],"mode":"lines+markers","text":["mean age: 34.5, Positive HIV Percent: 1.418%","mean age: NaN, Positive HIV Percent: 0%","mean age: 33, Positive HIV Percent: 1.277%","mean age: 40.6, Positive HIV Percent: 1.479%","mean age: 37, Positive HIV Percent: 1.007%","mean age: 35.67, Positive HIV Percent: 0.8%","mean age: NaN, Positive HIV Percent: 0%","mean age: 37, Positive HIV Percent: 0.324%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Living with partner","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"line":{"color":"rgba(34,168,132,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.923,1.01,1.266,0,1,0.90100000000000002,0,0,0],"mode":"lines+markers","text":["mean age: 45.5, Positive HIV Percent: 1.923%","mean age: 33, Positive HIV Percent: 1.01%","mean age: 40, Positive HIV Percent: 1.266%","mean age: NaN, Positive HIV Percent: 0%","mean age: 44, Positive HIV Percent: 1%","mean age: 33, Positive HIV Percent: 0.901%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"Separated","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"line":{"color":"rgba(122,209,81,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[1.143,1.3680000000000001,0.91200000000000003,1.1399999999999999,0.58699999999999997,0.75900000000000001,1.0609999999999999,1.252,0.54600000000000004],"mode":"lines+markers","text":["mean age: 37, Positive HIV Percent: 1.143%","mean age: 34.56, Positive HIV Percent: 1.368%","mean age: 32.5, Positive HIV Percent: 0.912%","mean age: 34.43, Positive HIV Percent: 1.14%","mean age: 31.5, Positive HIV Percent: 0.587%","mean age: 34.5, Positive HIV Percent: 0.759%","mean age: 36.44, Positive HIV Percent: 1.061%","mean age: 32, Positive HIV Percent: 1.252%","mean age: 33, Positive HIV Percent: 0.546%"],"type":"scatter","name":"Never married","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x2","yaxis":"y2","frame":null}],"layout":{"xaxis":{"domain":[0,0.40000000000000002],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["Married","Divorced","Living with partner","Separated","Never married","Widowed"],"anchor":"y"},"xaxis2":{"domain":[0.59999999999999998,1],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"anchor":"y2"},"yaxis2":{"domain":[0,1],"automargin":true,"anchor":"x2"},"yaxis":{"domain":[0,1],"automargin":true,"anchor":"x"},"annotations":[{"x":0.17000000000000001,"y":0.97999999999999998,"text":"Total Percent","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false},{"x":0.85999999999999999,"y":0.97999999999999998,"text":"Percent by Year","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false}],"shapes":[],"images":[],"margin":{"b":40,"l":60,"t":25,"r":10},"hovermode":"closest","showlegend":true,"title":"The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by Marital Status"},"attrs":{"5ca44aba56b3":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"5ca4100d4f5a":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>The bar plot indicated that the ‘widowed’ has reported the highest
+percent, while the ‘married’ had the lowest percent. From the line plot,
+we observed that the trend over 1999 to 2016 in each education level are
+different, but with a decreasing overall trend (except for ‘widowed’,
+which seemed to be an outlier). From the two plots, we found that the
+mean age in each marital status group and each year also had
+disparities, and it was hard to find a trend.</p>
+</div>
+<div
+id="same-sex-sexual-behavior-and-the-percent-of-positive-in-hiv-antibody-test"
+class="section level2">
+<h2>Same-sex Sexual Behavior and the Percent of ‘Positive’ in HIV
+Antibody Test</h2>
+<pre class="r"><code>bar_sexbehave = 
+  cleaned_joined_df %&gt;%
+  drop_na(hiv) %&gt;% 
+  mutate(samesexcontact = recode(samesexcontact, &quot;0&quot; = &quot;No same-sex sexual behavior&quot;, 
+                                  &quot;1&quot; = &quot;Has same-sex sexual behavior&quot;)) %&gt;% 
+  group_by(samesexcontact) %&gt;% 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;% 
   ungroup() %&gt;% 
-  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean)) %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
+  plot_ly(x = ~samesexcontact, y = ~hiv_percent, color = ~samesexcontact, type = &quot;bar&quot;, text = ~text_label, colors = &quot;viridis&quot;) 
+
+line_sexbehave =
+  cleaned_joined_df %&gt;% 
+  drop_na(hiv, samesexcontact) %&gt;% 
+  mutate(samesexcontact = recode(samesexcontact, &quot;0&quot; = &quot;No same-sex sexual behavior&quot;, 
+                                  &quot;1&quot; = &quot;Has same-sex sexual behavior&quot;)) %&gt;% 
+  group_by(year, samesexcontact) %&gt;% 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == &quot;Reactive&quot;]), 2), 
+            hiv_percent = round(sum(hiv == &quot;Reactive&quot;) / total_par * 100, 3)) %&gt;%
+  ungroup() %&gt;% 
+  mutate(text_label = str_c(&quot;mean age: &quot;, age_mean, &quot;, Positive HIV Percent: &quot;, hiv_percent, &quot;%&quot;)) %&gt;% 
   plot_ly(x = ~year, y = ~hiv_percent, color = ~samesexcontact, type = &quot;scatter&quot;, mode = &quot;lines+markers&quot;,
-          text = ~text_label, colors = &quot;viridis&quot;) %&gt;% 
-  layout(
-      xaxis = list(title = &quot;Year&quot;),
-      yaxis = list(title = &quot;Total Percent of HIV Positive Patients&quot;),
-      title = &quot;The Total Percent of HIV Positive Patients from 1999 to 2016 by Sexual Behavior&quot;
-    )</code></pre>
+          text = ~text_label, colors = &quot;viridis&quot;) </code></pre>
 <pre><code>## `summarise()` has grouped output by
 ## &#39;year&#39;. You can override using the
 ## `.groups` argument.</code></pre>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-fec5d8415f4340c2541c" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-fec5d8415f4340c2541c">{"x":{"visdat":{"746c3da72257":["function () ","plotlyVisDat"]},"cur_data":"746c3da72257","attrs":{"746c3da72257":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Year","type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Percent of HIV Positive Patients"},"title":"The Total Percent of HIV Positive Patients from 1999 to 2016 by Sexual Behavior","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.65000000000000002,0.316,0.51000000000000001,1,0.36499999999999999,0,1.835,0,0],"mode":"lines+markers","text":["mean age: 34.17","mean age: 34.48","mean age: 34.02","mean age: 33.98","mean age: 34.28","mean age: 34.34","mean age: 33.82","mean age: 33.41","mean age: 32.31"],"type":"scatter","name":"No","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[8,10.345000000000001,5.3570000000000002,9.5239999999999991,8.6959999999999997,4.7619999999999996,8.4510000000000005,9.1950000000000003,6.0979999999999999],"mode":"lines+markers","text":["mean age: 33.62","mean age: 32.83","mean age: 34.18","mean age: 33.79","mean age: 32.45","mean age: 31.68","mean age: 31.28","mean age: 29.38","mean age: 30.83"],"type":"scatter","name":"Yes","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>combine_sexbehave = combine_plot(bar_sexbehave, line_sexbehave, &quot;Sexual Behavior&quot;)</code></pre>
+<pre><code>## Warning: Ignoring 1 observations</code></pre>
+<pre class="r"><code>combine_sexbehave</code></pre>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-4b52926627f6d0a99667" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-4b52926627f6d0a99667">{"x":{"data":[{"x":["Has same-sex sexual behavior"],"y":[7.742],"text":"mean age: 34.04, Positive HIV Percent: 7.742%","type":"bar","name":"Has same-sex sexual behavior","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["No same-sex sexual behavior"],"y":[0.48099999999999998],"text":"mean age: 38.91, Positive HIV Percent: 0.481%","type":"bar","name":"No same-sex sexual behavior","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[8,10.345000000000001,5.3570000000000002,9.5239999999999991,8.6959999999999997,4.7619999999999996,8.4510000000000005,9.1950000000000003,6.0979999999999999],"mode":"lines+markers","text":["mean age: 29.75, Positive HIV Percent: 8%","mean age: 35, Positive HIV Percent: 10.345%","mean age: 30.67, Positive HIV Percent: 5.357%","mean age: 39, Positive HIV Percent: 9.524%","mean age: 36.67, Positive HIV Percent: 8.696%","mean age: 35.75, Positive HIV Percent: 4.762%","mean age: 34.33, Positive HIV Percent: 8.451%","mean age: 28.5, Positive HIV Percent: 9.195%","mean age: 36.4, Positive HIV Percent: 6.098%"],"type":"scatter","name":"Has same-sex sexual behavior","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"line":{"color":"rgba(68,1,84,1)"},"xaxis":"x2","yaxis":"y2","frame":null},{"x":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"y":[0.65000000000000002,0.316,0.51000000000000001,1,0.36499999999999999,0,1.835,0,0],"mode":"lines+markers","text":["mean age: 41.42, Positive HIV Percent: 0.65%","mean age: 37.43, Positive HIV Percent: 0.316%","mean age: 35.6, Positive HIV Percent: 0.51%","mean age: 45, Positive HIV Percent: 1%","mean age: 49, Positive HIV Percent: 0.365%","mean age: NaN, Positive HIV Percent: 0%","mean age: 37.5, Positive HIV Percent: 1.835%","mean age: NaN, Positive HIV Percent: 0%","mean age: NaN, Positive HIV Percent: 0%"],"type":"scatter","name":"No same-sex sexual behavior","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"line":{"color":"rgba(253,231,37,1)"},"xaxis":"x2","yaxis":"y2","frame":null}],"layout":{"xaxis":{"domain":[0,0.40000000000000002],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["Has same-sex sexual behavior","No same-sex sexual behavior"],"anchor":"y"},"xaxis2":{"domain":[0.59999999999999998,1],"automargin":true,"type":"category","categoryorder":"array","categoryarray":["1999-2000","2001-2002","2003-2004","2005-2006","2007-2008","2009-2010","2011-2012","2013-2014","2015-2016"],"anchor":"y2"},"yaxis2":{"domain":[0,1],"automargin":true,"anchor":"x2"},"yaxis":{"domain":[0,1],"automargin":true,"anchor":"x"},"annotations":[{"x":0.17000000000000001,"y":0.97999999999999998,"text":"Total Percent","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false},{"x":0.85999999999999999,"y":0.97999999999999998,"text":"Percent by Year","xref":"paper","yref":"paper","xanchor":"center","yanchor":"bottom","showarrow":false}],"shapes":[],"images":[],"margin":{"b":40,"l":60,"t":25,"r":10},"hovermode":"closest","showlegend":true,"title":"The Total Percent of HIV-Antibody Positive Patients from 1999 to 2016 by Sexual Behavior"},"attrs":{"5ca478c074ef":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"5ca438535a03":{"x":{},"y":{},"mode":"lines+markers","text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>The bar plot and the line plot indicated that the population has
+same-sex sexual behavior has reported much higher percent than the
+population without same-sex sexual behavior. From the line plot, we
+observed that the positive percent fluctuated a lot among the group that
+has same-sex sexual behavior; while in the group that without same-sex
+sexual behavior, the the positive percent in each year did not fluctuate
+as much. From the two plots, we found that the mean age in the group
+that has same-sex sexual behavior appeared to be higher than the group
+without same-sex sexual behavior.</p>
 </div>
 <div id="logistic-regression" class="section level2">
 <h2>logistic regression</h2>
@@ -880,13 +955,13 @@ class="section level3">
   ggplot(aes(x = estimate))+
   geom_density() +
   facet_wrap(.~ term)  </code></pre>
-<p><img src="NHANES_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="NHANES_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code>bootstrap_df|&gt; 
   filter(term != &quot;age&quot;) |&gt; 
   ggplot(aes(x = estimate))+
   geom_density() +
   facet_wrap(.~ term)</code></pre>
-<p><img src="NHANES_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<p><img src="NHANES_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <ul>
 <li>This is the uncertainty that we would get in this dataset if we do
 repeated sampling</li>
@@ -920,62 +995,62 @@ repeated sampling</li>
 <tr class="even">
 <td align="left">age</td>
 <td align="right">1.058</td>
-<td align="right">1.028</td>
-<td align="right">1.090</td>
+<td align="right">1.030</td>
+<td align="right">1.087</td>
 </tr>
 <tr class="odd">
 <td align="left">genderMale</td>
-<td align="right">6.864</td>
-<td align="right">3.494</td>
-<td align="right">13.229</td>
+<td align="right">6.780</td>
+<td align="right">3.371</td>
+<td align="right">13.893</td>
 </tr>
 <tr class="even">
 <td align="left">marriageDivorced</td>
-<td align="right">3.877</td>
-<td align="right">0.979</td>
-<td align="right">9.787</td>
+<td align="right">3.855</td>
+<td align="right">0.649</td>
+<td align="right">10.791</td>
 </tr>
 <tr class="odd">
 <td align="left">marriageLiving with partner</td>
-<td align="right">3.382</td>
-<td align="right">0.928</td>
-<td align="right">8.188</td>
+<td align="right">3.399</td>
+<td align="right">0.944</td>
+<td align="right">8.414</td>
 </tr>
 <tr class="even">
 <td align="left">marriageNever married</td>
-<td align="right">4.600</td>
-<td align="right">1.638</td>
-<td align="right">11.053</td>
+<td align="right">4.627</td>
+<td align="right">1.799</td>
+<td align="right">11.504</td>
 </tr>
 <tr class="odd">
 <td align="left">marriageSeparated</td>
-<td align="right">4.945</td>
-<td align="right">0.835</td>
-<td align="right">12.778</td>
+<td align="right">4.949</td>
+<td align="right">1.002</td>
+<td align="right">13.325</td>
 </tr>
 <tr class="even">
 <td align="left">marriageWidowed</td>
-<td align="right">11.232</td>
+<td align="right">11.310</td>
 <td align="right">0.000</td>
-<td align="right">44.706</td>
+<td align="right">51.613</td>
 </tr>
 <tr class="odd">
 <td align="left">raceMexican American</td>
-<td align="right">1.691</td>
-<td align="right">0.504</td>
-<td align="right">3.844</td>
+<td align="right">1.703</td>
+<td align="right">0.501</td>
+<td align="right">3.805</td>
 </tr>
 <tr class="even">
 <td align="left">raceNon-Hispanic Black</td>
-<td align="right">8.593</td>
-<td align="right">4.586</td>
-<td align="right">15.826</td>
+<td align="right">8.832</td>
+<td align="right">4.356</td>
+<td align="right">16.450</td>
 </tr>
 <tr class="odd">
 <td align="left">raceOther Hispanic</td>
-<td align="right">3.718</td>
-<td align="right">1.214</td>
-<td align="right">8.720</td>
+<td align="right">3.804</td>
+<td align="right">1.086</td>
+<td align="right">8.782</td>
 </tr>
 <tr class="even">
 <td align="left">raceOther Race - Including Multi-Racial</td>
@@ -985,9 +1060,9 @@ repeated sampling</li>
 </tr>
 <tr class="odd">
 <td align="left">samesexcontact</td>
-<td align="right">18.509</td>
-<td align="right">10.062</td>
-<td align="right">31.310</td>
+<td align="right">18.690</td>
+<td align="right">10.903</td>
+<td align="right">31.815</td>
 </tr>
 </tbody>
 </table>
@@ -1032,6 +1107,7 @@ considering potential interactions and subgroup analyses, could provide
 a more nuanced understanding of these associations. Moreover, the study
 could benefit from incorporating behavioral and contextual factors that
 might contribute to HIV risk.</p>
+</div>
 </div>
 
 
