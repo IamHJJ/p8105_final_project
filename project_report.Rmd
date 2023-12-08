@@ -20,18 +20,18 @@ library(modelr)
 
 # Motivation
 
-Global prevalence among adults (the percent of people ages 15-49 who are infected) has leveled since 2001 and was 0.7% in 2022. There were 39 million people living with HIV in 2022, up from 31.5 million in 2010, the result of continuing new infections and people living longer with HIV. is driven by the ambitious goal set forth by the Centers for Disease Control and Prevention (CDC) to end the HIV epidemic in the United States by 2025. This comprehensive approach is vital in understanding the dynamics of the epidemic, identifying the demographic and socioeconomic factors that contribute to the disease's prevalence, and uncovering actionable insights that could lead to effective intervention strategies. By dissecting the temporal progression of HIV and its incidence across different strata of the population, we aim to pinpoint disparities in transmission rates and healthcare outcomes that may otherwise be obscured in aggregate data. Furthermore, the logistic regression analysis elucidates the complex interplay of risk factors, providing a nuanced risk profile that can inform targeted public health initiatives and resource allocation.
-
-
+HIV (human immunodeficiency virus) is a crucial global public health concern. Since the beginning of the epidemic, 85.6 million people have been infected with the HIV virus and about 40.4 million people have died of HIV. Therefore, monitoring HIV surveillance data and understanding the risk factors of HIV infection is essential for HIV prevention and ending the HIV epidemic. This project aims to provide evidence-based information for public health practitioners to develop tailored HIV interventions, available to researchers from all over the world. 
 
 # Related Work
 
-The work is inspired by similar studies that have successfully leveraged statistical analyses to guide public health policies and interventions, such as the multifaceted approach taken in San Francisco, which resulted in a significant decrease in new HIV diagnoses, serving as a model for other cities following the CDC's initiative(https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8546755/). These efforts are crucial stepping stones toward the CDC's goal, representing a concerted effort to leverage data analytics in the battle against HIV and ultimately achieve a significant public health milestone.
+The work is inspired by similar studies that have successfully leveraged statistical analyses to guide public health policies and interventions, such as the multifaceted approach taken in San Francisco, which resulted in a significant decrease in new HIV diagnoses, serving as a model for other cities following the CDC's initiative (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8546755/). 
 
 
-# Initial Questions
+# Initial Question
 
-What is the global incidence of HIV? Which population are inappropriately influenced by HIV? What are the risk factors for HIV?
+What is the global incidence of HIV? Which populations are inappropriately influenced by HIV? What are the risk factors for HIV infection? 
+To answer these questions, we utilized the global HIV database provided by the US Census to understand trends in HIV from all countries. Since this database does not include information in the US, we utilized National Health and Nutrition Examination Survey (NHANES) datasets. An advantage of the NHANES dataset is that it includes variables such as demographic, socioeconomic status, etc., which also allows us to delve more in-depth into the potential risk factors associated with HIV infection. 
+
 
 
 # Data Sources and Cleaning
@@ -99,13 +99,52 @@ trend_subgroup <- incidence_grouped |>
   )
 ```
 
-## risk factor investigation
+## Risk factor investigation
 
 ### Data Source
 
 The [National Health and Nutrition Examination Survey](https://wwwn.cdc.gov/nchs/nhanes/) is designed to evaluate the health and nutritional status of both adults and children. In 1999, the NHANES study transitioned into a continuous format, enabling investigators to conduct longitudinal studies. NHANES encompasses both interview data and physical examination data, which involved information from different perspectives and fields, providing researchers with a comprehensive dataset to examine the prevalence and risk factors associated with various diseases. In this study, we used the demographic data, HIV testing, and sexual behavior data from 1999 to 2016 to identify the potential sociodemographic factors associated with HIV infection status.
 
-```{r}
+
+### Data Cleaning
+
+We will load the following libraries for utilization this section:
+
+* `haven`
+
+* `tidyverse`
+
+* `purrr`
+
+* `plotly`
+
+* `modelr`
+
+
+The following variables are included in the analysis:
+
+* `seqn`: sequence
+
+* `lbdhi`/`lbxhivc`: HIV test results 
+
+* `ridageyr`: age
+
+* `riagendr`: gender
+
+* `ridreth1`: race
+
+* `xdmdeduc2`: education
+
+* `dmdmartl`: martial status
+
+* `sxq220` / `sxq550`: In the past 12 months, with how many men have you had anal or oral sex? (Only to men)
+
+* `sxq150` / `sxq490`: In the past 12 months, with how many women have you had anal or oral sex? (Only to women)
+# Exploratory analysis
+
+## import NHANES datafiles
+The analyzed data sets was downloaded from the [National Health and Nutrition Examination Survey Website](https://wwwn.cdc.gov/nchs/nhanes/). Specifically, demographic, HIV test, and sexual behavior datas from 1999 to 2016 utilized to conducted the analysis. Participants aged between 20 and 49 with a completed survey were eligible and included to our study. 
+```{r load_data}
 demo_list = 
   list.files(path = "NHANES/DEMO", full.names = TRUE) 
 hiv_list = 
@@ -213,9 +252,7 @@ cleaned_joined_df =
   )) |>
   select(seqn, hiv, age, gender, race, education, marriage, year, samesexcontact)
 ```
-### Data Cleaning
 
-# Exploratory analysis
 
 ## HIV surveillance
 
@@ -223,7 +260,7 @@ cleaned_joined_df =
 
 * we showed HIV incidence by country.
 
-```{r incidence_map}
+```{r incidence_map, warning=FALSE,message=FALSE}
 # A map reports the HIV incidence rates in each country
 map_inc = incidence_grouped |>
   plot_ly(type = 'choropleth', locations = ~country_code,
@@ -236,11 +273,13 @@ map_inc
 
 ```
 
+Regions such as the Middle East, Sub-Saharan Africa, and South Asia demonstrate relatively higher HIV incidence rates compared to other areas. It is important to consider that regions depicted with no or minimal HIV incidence rates might not necessarily indicate a true low prevalence; this could be attributed to insufficient research or underreporting in those regions. Additionally, the database from which this map is generated does not include data from North American countries, hence their HIV incidence rates are not represented in this visualization.
+
 2. **Heatmap for Incidence Rate by Region, Decade, and National Income Level**
 
 * we categorized data by their continental region, their studied country's national income level, and decade of which the study is done. We produced a heatmap for reported HIV incidence rate grouped by these categories.
 
-```{r Trend-visualization-heatmap, fig.height=8, fig.width=10}
+```{r Trend-visualization-heatmap, fig.height=8, fig.width=10,warning=FALSE,message=FALSE}
 trend_continental <- trend_continental |> 
   mutate(avg_inc_rate = as.numeric(avg_inc_rate)) 
 
@@ -265,13 +304,70 @@ heatmap_plot <- trend_continental |>
 print(heatmap_plot)
 ```
 
+High, Upper middle income, and Lower middle income regions in Europe and Central Asia has the highest average incidence rate during 2000s and 2010s, followed by High income regions in Middle East & North Africa during 1990s and Lower middle income regions in South Asia during 2020s. Sub-Saharan Africa shows consistently higher incidence rates across all income levels and decades.
+
 3. **Bar Plot for Total Cases by Population Subgroup**
 
-* we categorized data by each study's reported target population (or population subgroup). We produced a barchart for reported number of HIV cases grouped by these categories.
+* we recoded the population subgroup according to the codebook on website(https://www2.census.gov/programs-surveys/international-programs/guidance/user-guide/HIV_AIDSGeneralTerms.pdf).
+  * Population Subgroups:
+    * `Children`: Includes all children except for those who are patients with
+tuberculosis or transfusion recipients.
+    * `Intravenous Drug Users/Needle Sharers`: Includes drug addicts.
+    * `Military/Armed Forces`: Includes police forces.
+    * `Other Non-Representative`: Includes high-risk individuals such as transgender individuals, and clients of sex workers who do not fall into any of the other subpopulations.
+    * `Other Patients`: Includes all other patients except for pediatric patients, STI
+patients, TB patients, and Transfused patients.
+    * `Sex workers`: Includes other highly sexually active women such as bar workers.
+    * `Two Known Mixed Groups`: Includes two different subpopulations reported with one
+number. An example one number represents both pregnant women and TB patients.
 
-```{r Trend-visualization-bar, fig.height=15, fig.width=8}
+We produced a barchart for reported number of HIV cases grouped by these recoded subgroups. I excluded those of general population not in this six categories.
+
+```{r Trend-visualization-bar, warning=FALSE,message=FALSE}
+
+## recode subpopulation
+trend_subgroup = trend_subgroup |>
+  mutate(
+    subpop_pooled = ifelse(
+     str_detect(population_subgroup, "(?i)police|military"), "Military/Armed Forces",
+     ifelse(
+       str_detect(population_subgroup, "(?i)child|pediatric"), "Children",
+     ifelse(
+       str_detect(population_subgroup, "(?i)drug|IVDU") & !str_detect(population_subgroup, "(?i)STI|homo|prisoner|partner|sex worker"),  "Intravenous Drug Users/Needle Sharers",
+     ifelse(
+       str_detect(population_subgroup, "(?i)sex worker|bar") & !str_detect(population_subgroup,"(?i)trans|IVDU|homo|MSM|drug|client"),"Sex workers",
+     ifelse(
+       str_detect(population_subgroup, "(?i)transgender|homo|MSM|gay|TB|STI|sexually|prisoner|infants born|HIV2+|high risk|of HIV") & !str_detect(population_subgroup, "(?i)sex worker|IVDU|drug|Testing center attendees"), "Other Non-Representative",
+      ifelse(
+       str_detect(population_subgroup, "(?i)pts.|pregnant|Mothers") & !str_detect(population_subgroup, "(?i)sex worker|IVDU|STI|homo|TB"), "Other Patients",
+      ifelse(
+       str_detect(population_subgroup, "(?i)Blood|port|Testing center attendees|employer|contractor|textile|Wives|HIV-") , "General Population","Two Known Mixed Groups"))))))))
+
+# unique(incidence$population_subgroup[str_detect(incidence$population_subgroup,"patient")]) for categorization
+# unique(incidence$population_subgroup[incidence$population_subgroup_pooled=="Two Known Mixed Groups"])
+trend_subgroup = trend_subgroup |>
+  mutate(subpop_pooled = ifelse(
+    population_subgroup %in% c("Bisexuals","Clients of sex workers","High risk individuals","Partners of drug users","Blood transfusion recipients"),"Other Non-Representative",subpop_pooled),
+    subpop_pooled = ifelse(
+      population_subgroup == "Sex workers & clients","Sex workers",subpop_pooled),
+    subpop_pooled = ifelse(
+      population_subgroup == "Patients","Other Patients",subpop_pooled),
+    subpop_pooled = ifelse(
+      population_subgroup %in% c("Heterosexuals","Adults","Individuals","Women","Various groups","Residents","Unspecified population","Truck drivers","Others","Adults - circumcised","Adults - uncircumcised","Factory workers", "General population", "Low risk groups","Fishermen","Workers","Esquineros","Trucking companies employees","Youths","Hospitality girls","Adolescents","Volunteers","Controls","Rural population","Employees","Commercial bank employees"),"General Population",subpop_pooled))
+
+#check if I recoded it correctlt
+check=trend_subgroup |>
+  filter(subpop_pooled != "Two Known Mixed Groups") |>
+  group_by(subpop_pooled,population_subgroup) |>
+  summarise(n=n())
+
+
 trend_subgroup |> 
-  ggplot(aes(y = population_subgroup, x = total_cases, fill = population_subgroup)) + 
+  filter(subpop_pooled != 'General Population')|>
+  group_by(subpop_pooled) |>
+  summarise(total = sum(total_cases))|>
+  mutate(subpop_pooled = fct_reorder(subpop_pooled,total)) |>
+  ggplot(aes(y = subpop_pooled, x = total, fill = subpop_pooled)) + 
   geom_bar(stat = "identity") +
   theme_minimal() +
   labs(title = "Total HIV Cases by Population Subgroup",
@@ -281,6 +377,8 @@ trend_subgroup |>
         legend.position = "none")
 ```
 
+This horizontal bar chart displays the distribution of total HIV cases by different population subgroups, with "Other Non-Representative" having the highest count and "Children" having the lowest. 
+
 
 ## Risk Factor investigation
 
@@ -288,7 +386,7 @@ To visualize the association between the selected potential risk factors and HIV
 
 Then, we plot each bar chart illustrating the integrated (from 1999 to 2016) percentage of ‘positive’ participants on the y-axis and the risk factor of interest on the x-axis, correlated with a line plot indicating the change of the ‘positive’ participants for each risk factor to assess the association between HIV and each risk factor in a rough way. Besides, the mean age of the positive clusters among each sub-cohort was also calculated for each characteristic/risk factor.
 
-```{r}
+```{r warning=FALSE,message=FALSE}
 combine_plot = function(bar, line, indicator){
   title_g = paste("Percent of HIV-Antibody Positive Patients from 1999 to 2016 by", indicator)
   
@@ -357,12 +455,49 @@ combine_race = combine_plot(bar_race, line_race, "Race")
 
 combine_race 
 ```
+
 * The bar plot shown the percent of patients with a positive result from the HIV antibody test in each race when we integrated all datasets from 1999 to 2016. It indicated that the race Non-Hispanic Black has reported the highest percent, while the 'Other Race' had the lowest percent. From the bar plot, disparity among the races.
 * The line plot shows the change in the reported, positive percent of HIV-antibody test from 1999 to 2016. We could observe that the trend in each race are different, but the Non-Hispanic Black and Other Hispanic had a decreasing trend over 1999 to 2016.
 From the two plots, we found that the mean age in each race and each year were also different.
 
 
-1. *Sex and the Percent of 'Positive' in HIV Antibody Test*
+1. *Race and the Percent of 'Positive' in HIV Antibody Test* 
+```{r message = FALSE, warning=FALSE}
+bar_race = 
+  cleaned_joined_df %>% 
+  drop_na(hiv) %>% 
+  group_by(race) %>%
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(race = fct_reorder(race, hiv_percent)) %>% 
+  mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
+  plot_ly(x = ~race, y = ~hiv_percent, color = ~race, type = "bar", text = ~text_label)
+
+line_race =
+  cleaned_joined_df %>% 
+  drop_na(hiv) %>% 
+  group_by(year, race) %>% 
+  summarize(total_par = n(), 
+            age_mean = round(mean(age[hiv == "Reactive"]), 2), 
+            hiv_percent = round(sum(hiv == "Reactive") / total_par * 100, 3)) %>%
+  ungroup() %>% 
+  mutate(race = fct_reorder(race, hiv_percent)) %>% 
+  mutate(text_label = str_c("mean age: ", age_mean, ", Positive HIV Percent: ", hiv_percent, "%")) %>% 
+  plot_ly(x = ~year, y = ~hiv_percent, color = ~race, type = "scatter", mode = "lines+markers",
+          text = ~text_label) 
+
+
+combine_race = combine_plot(bar_race, line_race, "Race")
+
+combine_race 
+```
+The bar plot displays the percentage of patients with a positive result from the HIV antibody test for each racial group when we integrated all datasets from 1999 to 2016. It indicates that the Non-Hispanic Black race reported the highest percentage, while the 'Other Race' had the lowest percentage. This bar plot highlights disparities among the races.
+The line plot illustrates the change in the reported positive percentage of HIV antibody tests from 1999 to 2016. We can observe that the trends in each racial group are different, with Non-Hispanic Black and Other Hispanic showing a decreasing trend over this period.
+From the two plots, it is evident that the mean age varies for each race and each year were also different.
+
+2. *Sex and the Percent of 'Positive' in HIV Antibody Test*
 ```{r message = FALSE, warning=FALSE}
 bar_gender = 
   cleaned_joined_df %>% 
@@ -391,12 +526,12 @@ line_gender =
 combine_gender = combine_plot(bar_gender, line_gender, "Gender")
 combine_gender
 ```
-* The bar plot and the line plot indicated that male has reported much higher percent than females. From the line plot, we observed that the positive percent were decreasing in each sex. 
-* From the two plots, we found that the mean age in females appeared to be slightly higher than males among the patients with a positive test result.
+Both the bar plot and the line plot indicate that males have reported a significantly higher percentage than females. Furthermore, the line plot reveals a decreasing trend in positive percentages for both sex.
+From the two plots, it is evident that the mean age in females appears to be slightly higher that among males among patients with a positive test result.
 
 
 
-2. *Education Level and the Percent of 'Positive' in HIV Antibody Test*
+3. *Education Level and the Percent of 'Positive' in HIV Antibody Test*
 ```{r message = FALSE, warning=FALSE}
 bar_edu = 
 cleaned_joined_df %>% 
@@ -434,12 +569,12 @@ line_edu =
 combine_edu = combine_plot(bar_edu, line_edu, "Education")
 combine_edu 
 ```
-* The bar plot indicated that the group with education level of '9-11th grade' has reported the highest percent, while the 'College graduate or above' had the lowest percent; disparity among the education was also observed.
-* From the line plot, we observed that the trend over 1999 to 2016 in each education level are different, but with a decreasing overall trend. 
-From the two plots, we found that the mean age in each race and each year were also different, and it is hard to find a trend.
+The bar plot indicates that the group with an education level of '9-11th grade' has reported the highest percentage, while 'College graduate or above' had the lowest percentage. Disparity among education levels was also observed.
+From the line plot, the trends from 1999 to 2016 in each education level are distinct, but with an overall decreasing trend.
+These two plots also indicate that the mean age varies for each race and each year, and the overall trend is unclear.
 
 
-3. *Marital status and the Percent of 'Positive' in HIV Antibody Test*
+4. *Marital status and the Percent of 'Positive' in HIV Antibody Test*
 ```{r message = FALSE, warning=FALSE}
 bar_mar = 
   cleaned_joined_df %>% 
@@ -470,13 +605,13 @@ line_mar =
 combine_mar = combine_plot(bar_mar, line_mar, "Marital Status")
 combine_mar
 ```
-* The bar plot indicated that the 'widowed' has reported the highest percent, while the 'married' had the lowest percent.
-* From the line plot, we observed that the trend over 1999 to 2016 in each education level are different, but with a decreasing overall trend (except for 'widowed', which seemed to be an outlier). 
-* From the two plots, we found that the mean age in each marital status group and each year also had disparities, and it was hard to find a trend.
+The bar plot shows that 'widowed' individuals have reported the highest percentage, while 'married' individuals had the lowest percentage.
+From the line plot, it is evident that the trends from 1999 to 2016 in each marital status group are different, with an overall decreasing trend (except for 'widowed', which appears to be an outlier). 
+These two plots also indicate that the mean age varies for each race and each year, and the overall trend is unclear.
 
 
 
-4. *Same-sex Sexual Behavior and the Percent of 'Positive' in HIV Antibody Test*
+5. *Same-sex Sexual Behavior and the Percent of 'Positive' in HIV Antibody Test*
 ```{r message = FALSE, warning=FALSE}
 bar_sexbehave = 
   cleaned_joined_df %>%
@@ -509,8 +644,10 @@ line_sexbehave =
 combine_sexbehave = combine_plot(bar_sexbehave, line_sexbehave, "Sexual Behavior")
 combine_sexbehave
 ```
-* The bar plot and the line plot indicated that the population has same-sex sexual behavior has reported much higher percent than the population without same-sex sexual behavior. From the line plot, we observed that the positive percent fluctuated a lot among the group that has same-sex sexual behavior; while in the group that without same-sex sexual behavior, the the positive percent in each year did not fluctuate as much.
-From the two plots, we found that the mean age in the group that has same-sex sexual behavior appeared to be higher than the group without same-sex sexual behavior.
+
+Both the bar plot and the line plot indicate that the population with same-sex sexual behavior has reported a much higher percentage than the population without same-sex sexual behavior.
+The line plot indicates that the positive percentage fluctuated significantly among the group with same-sex sexual behavior, whereas in the group without same-sex sexual behavior, the positive percentage in each year did not exhibit as much fluctuation.
+These two plots also suggest that the mean age in the group with same-sex sexual behavior appears to be higher than that in the group without same-sexual behavior.
 
 # Additional analysis
 
@@ -539,7 +676,7 @@ grouped_data <- sorted_data |>
 
 
 ### Model Building
-```{r meta-Time-Series Analysis, warning=FALSE}
+```{r meta-Time-Series Analysis, warning=FALSE, message=FALSE}
 library(forecast)
 library(tseries)
 library(purrr)
@@ -649,7 +786,7 @@ if (length(time_series_results) > 0) {
 ### Model Diagnosis and Time Series Trend Visualization
 
 1. *Select which model/combination to visualize*
-```{r time series visualize - model selection}
+```{r time series visualize - model selection,warning=FALSE,message=FALSE}
 # Loop through the results and print the summary of each ARIMA model
 for (combination in names(time_series_results)) {
   cat("\nCombination:", combination, "\n")
@@ -660,7 +797,7 @@ for (combination in names(time_series_results)) {
 Based on the summary of the ARIMA model for the combination "Sub-Saharan Africa_Lower middle income_Sex workers," it looks like an interesting case to visualize. The ARIMA(0,1,2) model with drift indicates that the time series is differenced once (to make it stationary) and includes two moving average terms. The drift term suggests a linear trend over time.
 
 2. *Time Series Trend Visualization*
-```{r time series visualize - visualization}
+```{r time series visualize - visualization, warning=FALSE,message=FALSE}
 # Extracting the data and model for "Sub-Saharan Africa_Lower middle income_Sex workers"
 selected_model <- time_series_results[["Sub-Saharan Africa_Lower middle income_Sex workers"]]$arima_model
 selected_data <- grouped_data %>%
@@ -686,7 +823,7 @@ ggplot(selected_data, aes(x = year, y = mean_inc_rate)) +
 - **Interpretation of Trend**: There is a notable decrease in the mean incidence rate from the early 1990s, which then stabilizes into a more fluctuating pattern from the 2000s onwards. The red line (fitted values) is capturing this trend, suggesting that the ARIMA model is accounting for the major trend in the data.
 
 3. *Diagnostic Plots for the ARIMA Model*
-```{r time series visualize - model diagnostic plot}
+```{r time series visualize - model diagnostic plot ,warning=FALSE,message=FALSE}
 # Diagnostic plots for the ARIMA model of the selected combination
 checkresiduals(selected_model)
 ```
@@ -709,7 +846,9 @@ checkresiduals(selected_model)
 cleaned_regression_df= 
    cleaned_joined_df |> 
    mutate(
-      hiv_outcome = ifelse(hiv == "Reactive", 1, ifelse(hiv == "Non-reactive", 0, NA)),
+      hiv_outcome = case_when(
+        hiv == "Reactive" ~ 1,
+        hiv == "Non-reactive" ~ 0), 
       education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", "High school graduate or equivalent", "Some college or AA degree", "College graduate or above")),
       race = forcats::fct_relevel(race, c("Non-Hispanic White", "Mexican American", "Non-Hispanic Black", "Other Hispanic", "Other Race - Including Multi-Racial")),
       marriage = forcats::fct_relevel(marriage, c("Married", "Widowed", "Divorced", "Separated", "Never married", "Living with partner"))

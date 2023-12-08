@@ -6,7 +6,7 @@ output:
     toc: true
     toc_float: true
     theme: yeti
-    css: Home.css
+    css: style.css
     code_folding: hide
 editor_options: 
   chunk_output_type: console
@@ -126,7 +126,7 @@ trend_subgroup <- incidence_grouped |>
 
 * we showed HIV incidence by country.
 
-```{r incidence_map}
+```{r incidence_map, warning=FALSE,message=FALSE}
 # A map reports the HIV incidence rates in each country
 map_inc = incidence_grouped |>
   plot_ly(type = 'choropleth', locations = ~country_code,
@@ -145,7 +145,7 @@ Regions such as the Middle East, Sub-Saharan Africa, and South Asia demonstrate 
 
 * we categorized data by their continental region, their studied country's national income level, and decade of which the study is done. We produced a heatmap for reported HIV incidence rate grouped by these categories.
 
-```{r Trend-visualization-heatmap, fig.height=8, fig.width=10}
+```{r Trend-visualization-heatmap, fig.height=8, fig.width=10,warning=FALSE,message=FALSE}
 trend_continental <- trend_continental |> 
   mutate(avg_inc_rate = as.numeric(avg_inc_rate)) 
 
@@ -176,22 +176,22 @@ High, Upper middle income, and Lower middle income regions in Europe and Central
 
 * we recoded the population subgroup according to the codebook on website(https://www2.census.gov/programs-surveys/international-programs/guidance/user-guide/HIV_AIDSGeneralTerms.pdf).
 
-** Population Subgroups:
+  * Population Subgroups:
 
-*** `Children`: Includes all children except for those who are patients with
+    * `Children`: Includes all children except for those who are patients with
 tuberculosis or transfusion recipients.
-*** `Intravenous Drug Users/Needle Sharers`: Includes drug addicts.
-*** `Military/Armed Forces`: Includes police forces.
-*** `Other Non-Representative`: Includes high-risk individuals such as transgender individuals, and clients of sex workers who do not fall into any of the other subpopulations.
-*** `Other Patients`: Includes all other patients except for pediatric patients, STI
+    * `Intravenous Drug Users/Needle Sharers`: Includes drug addicts.
+    * `Military/Armed Forces`: Includes police forces.
+    * `Other Non-Representative`: Includes high-risk individuals such as transgender individuals, and clients of sex workers who do not fall into any of the other subpopulations.
+    * `Other Patients`: Includes all other patients except for pediatric patients, STI
 patients, TB patients, and Transfused patients.
-*** `Sex workers`: Includes other highly sexually active women such as bar workers.
-*** `Two Known Mixed Groups`: Includes two different subpopulations reported with one
+    * `Sex workers`: Includes other highly sexually active women such as bar workers.
+    * `Two Known Mixed Groups`: Includes two different subpopulations reported with one
 number. An example one number represents both pregnant women and TB patients.
 
 We produced a barchart for reported number of HIV cases grouped by these recoded subgroups. I excluded those of general population not in this six categories.
 
-```{r Trend-visualization-bar, fig.height=15, fig.width=8}
+```{r Trend-visualization-bar,warning=FALSE,message=FALSE}
 
 ## recode subpopulation
 trend_subgroup = trend_subgroup |>
@@ -228,9 +228,6 @@ check=trend_subgroup |>
   filter(subpop_pooled != "Two Known Mixed Groups") |>
   group_by(subpop_pooled,population_subgroup) |>
   summarise(n=n())
-
-trend_subgroup |>
-  filter(subpop_pooled == "Two Known Mixed Groups") 
 
 
 trend_subgroup |> 
@@ -279,7 +276,7 @@ grouped_data <- sorted_data |>
 
 
 ### Model Building
-```{r meta-Time-Series Analysis, warning=FALSE}
+```{r meta-Time-Series Analysis, warning=FALSE,message=FALSE}
 library(forecast)
 library(tseries)
 library(purrr)

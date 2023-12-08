@@ -5,7 +5,7 @@ output:
     toc: true
     toc_float: true
     theme: yeti
-    css: Home.css
+    css: style.css
     code_folding: hide
 editor_options: 
   chunk_output_type: inline
