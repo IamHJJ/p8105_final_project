@@ -32,8 +32,10 @@ library(cropcircles)
 # <img src="team_photo/hjj.jpg" width="300" height="300" style="border:2px solid orange"> Junjie Hu
 [LinkeIn](https://www.linkedin.com/in/junjie-hu-457161264/)
 
+<br></br>
 
-
+# <img src="team_photo/tj.jpg" width="300" height="300" style="border:2px solid orange"> Tianyun Jiang
+[LinkeIn](https://www.linkedin.com/in/tianyun-jiang/)
 
 
 
