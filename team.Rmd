@@ -14,8 +14,6 @@ library(cropcircles)
 
 <br></br>
 
-
-
 # <img src="team_photo/rl.jpg" alt="Avatar" width="300" height="300" style="border:2px solid orange"> Ruixi Li
 [LinkeIn](https://www.linkedin.com/in/ruixi-li-/)
 
@@ -31,13 +29,11 @@ library(cropcircles)
 
 <br></br>
 
-# <img src="images/Shivangi.jpeg" alt="Avatar" width="300" height="300" style="border:2px solid orange"> Shivangi Mewada
+# <img src="team_photo/hjj.jpg" width="300" height="300" style="border:2px solid orange"> Junjie Hu
+[LinkeIn](https://www.linkedin.com/in/junjie-hu-457161264/)
 
 
 
-<br></br>
-
-# <img src="images/Cathy.jpeg" alt="Avatar" width="300" height="300" style="border:2px solid orange"> Cathy Yang
 
 
 

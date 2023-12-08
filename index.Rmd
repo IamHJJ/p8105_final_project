@@ -32,6 +32,7 @@ This page is dedicated to providing you with comprehensive resources and accessi
 ![](images/resources.jpeg)
 
 ## [Final report](project_report.html)
+This section detailly descripted how we completed our project, and covered data collection and cleaning, exploratory analyses, alternative strategies, descriptions of approaches, and a discussion of results. 
 
 
 
