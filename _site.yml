@@ -4,8 +4,6 @@ navbar:
   title: "Global HIV Hub"
   right:
   
-    - text: "About HIV"
-      href: about_hiv.html
     - text: "HIV Surveillance"
       href: analysis_draft.html
     - text: "Risk Factors"
@@ -17,7 +15,17 @@ navbar:
       
     - icon: fa-github fa-lg
       href: https://github.com/IamHJJ/p8105_final_project.github.io
+    - icon: fa-envelope fa-lg
+      href: mailto:<rl3328@cumc.columbia.edu,jh4617@cumc.columbia.edu, xl3214@cumc.columbia.edu, tj2519@cumc.columbia.edu, qs2261@cumc.columbia.edu>
 
+
+  left:
+    - text: "About"
+      menu:
+        - text: "Project"
+          href: about_hiv.html
+        - text: "Team"
+          href: team.html
 output:
   html_document:
     theme: cosmo
