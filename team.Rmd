@@ -26,8 +26,8 @@ library(cropcircles)
 
 <br></br>
 
-# <img src="images/Rhea.jpeg" alt="Avatar" width="300" height="300" style="border:2px solid orange"> Rhea Pawar
-
+# <img src="team_photo/qs.jpg" width="300" height="300" style="border:2px solid orange"> Qinting Shen
+[LinkeIn](https://www.linkedin.com/in/qinting-shen/)
 
 <br></br>
 
