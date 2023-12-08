@@ -375,14 +375,16 @@ The bar plot and the line plot indicated that the population has same-sex sexual
 From the two plots, we found that the mean age in the group that has same-sex sexual behavior appeared to be higher than the group without same-sex sexual behavior.
 
 
-# logistic regression
+# Logistic Regression
 
 ## Set the reference group
 ```{r}
 cleaned_regression_df= 
    cleaned_joined_df |> 
    mutate(
-      hiv_outcome = ifelse(hiv == "Reactive", 1, ifelse(hiv == "Non-reactive", 0, NA)),
+      hiv_outcome = case_when(
+        hiv == "Reactive" ~ 1,
+        hiv == "Non-reactive" ~ 0), 
       education = forcats::fct_relevel(education, c("Less than 9th grade", "9-11th grade", "High school graduate or equivalent", "Some college or AA degree", "College graduate or above")),
       race = forcats::fct_relevel(race, c("Non-Hispanic White", "Mexican American", "Non-Hispanic Black", "Other Hispanic", "Other Race - Including Multi-Racial")),
       marriage = forcats::fct_relevel(marriage, c("Married", "Widowed", "Divorced", "Separated", "Never married", "Living with partner"))

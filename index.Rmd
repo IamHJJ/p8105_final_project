@@ -19,10 +19,10 @@ In this section, we analyze and identify the potential sociodemographic risk and
 ![](images/risk_factors.png)
 
 
-## [Section 2: HIV/AIDS Surveillance Data Analysis across Developing Countries](analysis_draft.html)
+## [Section 2: HIV/AIDS Surveillance Data Analysis](analysis_draft.html)
 
 The primary goal of this section is to analyze information 
-on HIV prevalence, incidence rates, and AIDS mortality from available studies across developing countries. This project also helps identify the most vulnerable gender, sub-population, and geographic region.
+on HIV prevalence, incidence rates, and AIDS mortality from available studies. This project also helps identify the most vulnerable gender, sub-population, and geographic region.
 
 ![](images/hiv_surveillance.png)
 
