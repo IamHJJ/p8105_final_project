@@ -20,7 +20,7 @@ library(modelr)
 
 # Motivation
 
-HIV (human immunodeficiency virus) is a crucial global public health concern. Since the beginning of the epidemic, 85.6 million people have been infected with the HIV virus and about 40.4 million people have died of HIV. Therefore, monitoring HIV surveillance data and understanding the risk factors of HIV infection is essential for HIV prevention and ending the HIV epidemic. This project aims to provide evidence-based information for public health practitioners to develop tailored HIV interventions, available to researchers from all over the world. 
+HIV (human immunodeficiency virus) is a crucial global public health concern. Since the beginning of the epidemic, 85.6 million people have been infected with the HIV virus and about 40.4 million people have died of HIV. Therefore, monitoring HIV surveillance data and understanding the risk factors of HIV infection is essential for HIV prevention and ending the HIV epidemic. This project aims to provide evidence-based information for public health practitioners to develop tailored HIV interventions, available to researchers from all over the world.
 
 # Related Work
 

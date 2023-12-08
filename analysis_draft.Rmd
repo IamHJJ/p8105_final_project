@@ -176,6 +176,7 @@ High, Upper middle income, and Lower middle income regions in Europe and Central
 
 * we recoded the population subgroup according to the codebook on website(https://www2.census.gov/programs-surveys/international-programs/guidance/user-guide/HIV_AIDSGeneralTerms.pdf).
 
+<<<<<<< Updated upstream
   * Population Subgroups:
 
     * `Children`: Includes all children except for those who are patients with
@@ -230,6 +231,65 @@ check=trend_subgroup |>
   summarise(n=n())
 
 
+=======
+** Population Subgroups:
+
+*** `Children`: Includes all children except for those who are patients with
+tuberculosis or transfusion recipients.
+*** `Intravenous Drug Users/Needle Sharers`: Includes drug addicts.
+*** `Military/Armed Forces`: Includes police forces.
+*** `Other Non-Representative`: Includes high-risk individuals such as transgender individuals, and clients of sex workers who do not fall into any of the other subpopulations.
+*** `Other Patients`: Includes all other patients except for pediatric patients, STI
+patients, TB patients, and Transfused patients.
+*** `Sex workers`: Includes other highly sexually active women such as bar workers.
+*** `Two Known Mixed Groups`: Includes two different subpopulations reported with one
+number. An example one number represents both pregnant women and TB patients.
+
+We produced a barchart for reported number of HIV cases grouped by these recoded subgroups. I excluded those of general population not in this six categories.
+
+```{r Trend-visualization-bar, fig.height=15, fig.width=8}
+
+## recode subpopulation
+trend_subgroup = trend_subgroup |>
+  mutate(
+    subpop_pooled = ifelse(
+     str_detect(population_subgroup, "(?i)police|military"), "Military/Armed Forces",
+     ifelse(
+       str_detect(population_subgroup, "(?i)child|pediatric"), "Children",
+     ifelse(
+       str_detect(population_subgroup, "(?i)drug|IVDU") & !str_detect(population_subgroup, "(?i)STI|homo|prisoner|partner|sex worker"),  "Intravenous Drug Users/Needle Sharers",
+     ifelse(
+       str_detect(population_subgroup, "(?i)sex worker|bar") & !str_detect(population_subgroup,"(?i)trans|IVDU|homo|MSM|drug|client"),"Sex workers",
+     ifelse(
+       str_detect(population_subgroup, "(?i)transgender|homo|MSM|gay|TB|STI|sexually|prisoner|infants born|HIV2+|high risk|of HIV") & !str_detect(population_subgroup, "(?i)sex worker|IVDU|drug|Testing center attendees"), "Other Non-Representative",
+      ifelse(
+       str_detect(population_subgroup, "(?i)pts.|pregnant|Mothers") & !str_detect(population_subgroup, "(?i)sex worker|IVDU|STI|homo|TB"), "Other Patients",
+      ifelse(
+       str_detect(population_subgroup, "(?i)Blood|port|Testing center attendees|employer|contractor|textile|Wives|HIV-") , "General Population","Two Known Mixed Groups"))))))))
+
+# unique(incidence$population_subgroup[str_detect(incidence$population_subgroup,"patient")]) for categorization
+# unique(incidence$population_subgroup[incidence$population_subgroup_pooled=="Two Known Mixed Groups"])
+trend_subgroup = trend_subgroup |>
+  mutate(subpop_pooled = ifelse(
+    population_subgroup %in% c("Bisexuals","Clients of sex workers","High risk individuals","Partners of drug users","Blood transfusion recipients"),"Other Non-Representative",subpop_pooled),
+    subpop_pooled = ifelse(
+      population_subgroup == "Sex workers & clients","Sex workers",subpop_pooled),
+    subpop_pooled = ifelse(
+      population_subgroup == "Patients","Other Patients",subpop_pooled),
+    subpop_pooled = ifelse(
+      population_subgroup %in% c("Heterosexuals","Adults","Individuals","Women","Various groups","Residents","Unspecified population","Truck drivers","Others","Adults - circumcised","Adults - uncircumcised","Factory workers", "General population", "Low risk groups","Fishermen","Workers","Esquineros","Trucking companies employees","Youths","Hospitality girls","Adolescents","Volunteers","Controls","Rural population","Employees","Commercial bank employees"),"General Population",subpop_pooled))
+
+
+check=trend_subgroup |>
+  filter(subpop_pooled != "Two Known Mixed Groups") |>
+  group_by(subpop_pooled,population_subgroup) |>
+  summarise(n=n())
+
+trend_subgroup |>
+  filter(subpop_pooled == "Two Known Mixed Groups") 
+
+
+>>>>>>> Stashed changes
 trend_subgroup |> 
   filter(subpop_pooled != 'General Population')|>
   group_by(subpop_pooled) |>
