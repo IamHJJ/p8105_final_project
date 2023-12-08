@@ -28,8 +28,43 @@ Our study's primary objective is to analyze the NHANES dataset from 1999 to 2016
 
 # Data Cleaning
 
+## Libraries and Variables
+We will load the following libraries for utilization this section:
+
+* `haven`
+
+* `tidyverse`
+
+* `purrr`
+
+* `plotly`
+
+* `modelr`
+
+
+The following variables are included in the analysis:
+
+* `seqn`: sequence
+
+* `lbdhi`/`lbxhivc`: HIV test results 
+
+* `ridageyr`: age
+
+* `riagendr`: gender
+
+* `ridreth1`: race
+
+* `xdmdeduc2`: education
+
+* `dmdmartl`: martial status
+
+* `sxq220` / `sxq550`: In the past 12 months, with how many men have you had anal or oral sex? (Only to men)
+
+* `sxq150` / `sxq490`: In the past 12 months, with how many women have you had anal or oral sex? (Only to women)
+
+
 ## import NHANES datafiles
-The analyzed data sets was downloaded from the [National Health and Nutrition Examination Survey Website](https://wwwn.cdc.gov/nchs/nhanes/). Specifically, demographic, HIV test, and sexual behavior datas from 1999 to 2016 utilized to conducted the analysis. Participants aged between 20 and 49 with a completed survey were eligible and included to our study.
+The analyzed data sets was downloaded from the [National Health and Nutrition Examination Survey Website](https://wwwn.cdc.gov/nchs/nhanes/). Specifically, demographic, HIV test, and sexual behavior datas from 1999 to 2016 utilized to conducted the analysis. Participants aged between 20 and 49 with a completed survey were eligible and included to our study. 
 ```{r}
 demo_list = 
   list.files(path = "NHANES/DEMO", full.names = TRUE) 
@@ -218,9 +253,9 @@ combine_race = combine_plot(bar_race, line_race, "Race")
 
 combine_race 
 ```
-The bar plot shown the percent of patients with a positive result from the HIV antibody test in each race when we integrated all datasets from 1999 to 2016. It indicated that the race Non-Hispanic Black has reported the highest percent, while the 'Other Race' had the lowest percent. From the bar plot, disparity among the races.
-The line plot shows the change in the reported, positive percent of HIV-antibody test from 1999 to 2016. We could observe that the trend in each race are different, but the Non-Hispanic Black and Other Hispanic had a decreasing trend over 1999 to 2016.
-From the two plots, we found that the mean age in each race and each year were also different.
+The bar plot displays the percentage of patients with a positive result from the HIV antibody test for each racial group when we integrated all datasets from 1999 to 2016. It indicates that the Non-Hispanic Black race reported the highest percentage, while the 'Other Race' had the lowest percentage. This bar plot highlights disparities among the races.
+The line plot illustrates the change in the reported positive percentage of HIV antibody tests from 1999 to 2016. We can observe that the trends in each racial group are different, with Non-Hispanic Black and Other Hispanic showing a decreasing trend over this period.
+From the two plots, it is evident that the mean age varies for each race and each year were also different.
 
 
 
@@ -253,8 +288,8 @@ line_gender =
 combine_gender = combine_plot(bar_gender, line_gender, "Gender")
 combine_gender
 ```
-The bar plot and the line plot indicated that male has reported much higher percent than females. From the line plot, we observed that the positive percent were decreasing in each sex. 
-From the two plots, we found that the mean age in females appeared to be slightly higher than males among the patients with a positive test result.
+Both the bar plot and the line plot indicate that males have reported a significantly higher percentage than females. Furthermore, the line plot reveals a decreasing trend in positive percentages for both sex.
+From the two plots, it is evident that the mean age in females appears to be slightly higher that among males among patients with a positive test result.
 
 
 
@@ -296,9 +331,9 @@ line_edu =
 combine_edu = combine_plot(bar_edu, line_edu, "Education")
 combine_edu 
 ```
-The bar plot indicated that the group with education level of '9-11th grade' has reported the highest percent, while the 'College graduate or above' had the lowest percent; disparity among the education was also observed.
-From the line plot, we observed that the trend over 1999 to 2016 in each education level are different, but with a decreasing overall trend. 
-From the two plots, we found that the mean age in each race and each year were also different, and it is hard to find a trend.
+The bar plot indicates that the group with an education level of '9-11th grade' has reported the highest percentage, while 'College graduate or above' had the lowest percentage. Disparity among education levels was also observed.
+From the line plot, the trends from 1999 to 2016 in each education level are distinct, but with an overall decreasing trend.
+These two plots also indicate that the mean age varies for each race and each year, and the overall trend is unclear.
 
 
 ## Marital status and the Percent of 'Positive' in HIV Antibody Test 
@@ -332,9 +367,9 @@ line_mar =
 combine_mar = combine_plot(bar_mar, line_mar, "Marital Status")
 combine_mar
 ```
-The bar plot indicated that the 'widowed' has reported the highest percent, while the 'married' had the lowest percent.
-From the line plot, we observed that the trend over 1999 to 2016 in each education level are different, but with a decreasing overall trend (except for 'widowed', which seemed to be an outlier). 
-From the two plots, we found that the mean age in each marital status group and each year also had disparities, and it was hard to find a trend.
+The bar plot shows that 'widowed' individuals have reported the highest percentage, while 'married' individuals had the lowest percentage.
+From the line plot, it is evident that the trends from 1999 to 2016 in each marital status group are different, with an overall decreasing trend (except for 'widowed', which appears to be an outlier). 
+These two plots also indicate that the mean age varies for each race and each year, and the overall trend is unclear.
 
 
 
@@ -371,8 +406,9 @@ line_sexbehave =
 combine_sexbehave = combine_plot(bar_sexbehave, line_sexbehave, "Sexual Behavior")
 combine_sexbehave
 ```
-The bar plot and the line plot indicated that the population has same-sex sexual behavior has reported much higher percent than the population without same-sex sexual behavior. From the line plot, we observed that the positive percent fluctuated a lot among the group that has same-sex sexual behavior; while in the group that without same-sex sexual behavior, the the positive percent in each year did not fluctuate as much.
-From the two plots, we found that the mean age in the group that has same-sex sexual behavior appeared to be higher than the group without same-sex sexual behavior.
+Both the bar plot and the line plot indicate that the population with same-sex sexual behavior has reported a much higher percentage than the population without same-sex sexual behavior.
+The line plot indicates that the positive percentage fluctuated significantly among the group with same-sex sexual behavior, whereas in the group without same-sex sexual behavior, the positive percentage in each year did not exhibit as much fluctuation.
+These two plots also suggest that the mean age in the group with same-sex sexual behavior appears to be higher than that in the group without same-sexual behavior.
 
 
 # Logistic Regression
