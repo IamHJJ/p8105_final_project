@@ -20,7 +20,7 @@ library(cropcircles)
 <br></br>
 
 # <img src="team_photo/xl.jpg" width="300" height="300" style="border:2px solid orange"> Xuan Lu
-[LinkedIn](www.linkedin.com/in/kristal-xuan-lu)
+[LinkedIn](https://www.linkedin.com/in/kristal-xuan-lu/)
 
 <br></br>
 
