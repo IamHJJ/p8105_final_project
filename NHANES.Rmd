@@ -388,6 +388,9 @@ cleaned_regression_df=
       marriage = forcats::fct_relevel(marriage, c("Married", "Widowed", "Divorced", "Separated", "Never married", "Living with partner"))
          )
 ```
+I set "Less than 9th grade" as the reference group for the `education` variable;
+"Non-Hispanic White" as the reference group for the `race` variable;
+"Married" as the reference group for the `marriage` variable.
 
 ## Bivariate analysis
 ```{r}
@@ -479,11 +482,11 @@ bootstrap_df|>
 **Bootstrap Confidence Intervals:**
 
 * The bootstrap analysis yields informative insights into the association between various sociodemographic factors and HIV outcomes. 
-  * Notably, the wide 95% confidence intervals (CI) for most variables, excluding age, suggest substantial uncertainty in the estimated odds ratios. The variable "samesexcontact" stands out with a mean odds ratio of 18.499 and a relatively narrow CI (10.862 to 31.096), indicating a robust positive association with HIV risk. 
-  * In contrast, variables like "genderMale," "marriageDivorced," "marriageLiving with partner," "marriageNever married," "marriageSeparated," "marriageWidowed," "raceMexican American," "raceNon-Hispanic Black," and "raceOther Hispanic" exhibit wide CIs, signifying considerable variability in their associations with HIV. 
+  * Notably, the wide 95% confidence intervals (CI) for most variables, excluding age, suggest substantial uncertainty in the estimated odds ratios. Same-sex behavior stands out with a mean odds ratio of 18.499 and a relatively narrow CI (10.862 to 31.096), indicating a robust positive association with HIV risk. 
+  * In contrast, factors like "Male" "Divorced" "Living with partner" "Never married" "Separated" "Widowed" "Mexican American" "Non-Hispanic Black" and "Other Hispanic" exhibit wide CIs, signifying considerable variability in their associations with HIV. 
 * The broad 95% CI underscores the uncertainty in the magnitude of these associations and suggests a need for caution in drawing definitive conclusions. This may be attributed to sample variability or other unaccounted factors influencing the observed relationships. 
   
-## Conclusion: 
+# Conclusion 
 The logistic regression and bootstrap analyses indicate that several demographic factors are associated with HIV outcomes, same-sex behavior showing a particularly strong positive association. However, the wide 95% confidence intervals for most variables, excluding age, show significant uncertainty in the estimated odds ratios, highlighting the limitations of the study. These broad intervals may stem from sample variability or unaccounted confounders, necessitating caution in drawing definitive conclusions.
 
 Therefore, future research should explore larger and more diverse datasets to enhance the generalizability of findings and address potential sources of variability. Additionally, a thorough investigation into the complex interplay between demographic variables and HIV risk, considering potential interactions and subgroup analyses, could provide a more nuanced understanding of these associations. Moreover, the study could benefit from incorporating behavioral and contextual factors that might contribute to HIV risk.
