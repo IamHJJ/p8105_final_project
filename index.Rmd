@@ -4,6 +4,7 @@ author: "Junjie Hu, Ruixi Li, Xuan Lu, Tianyun Jiang, Qinting Shen "
 output: 
   html_document:
     css: Home.css
+    code_folding: hide
 ---
 
 # **Global HIV Hub: Surveillance, Analysis, and Resources**
@@ -38,5 +39,9 @@ This page is dedicated to providing you with comprehensive resources and accessi
 This section detailly descripted how we completed our project, and covered data collection and cleaning, exploratory analyses, alternative strategies, descriptions of approaches, and a discussion of results. 
 
 
+## Screencast
+```{r}
+vembedr::embed_url("https://youtu.be/-jgmyDOKV2s")
+```
 
 
