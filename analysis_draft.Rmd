@@ -87,7 +87,7 @@ digraph flowchart {
 ```
 
 ## Data Preperation
-
+To prepare the dataset for trend analysis, we first ensure all case counts are numerical and then rectify any data inaccuracies by substituting missing or placeholder values with zeros. Next, we organize the data by continental regions, income groups, and decade intervals, which allows us to compute average HIV incidence rates and total case counts within these categories. Similarly, we categorize the data by specific population subgroups to identify and quantify HIV trends within those demographics. 
 ```{r Trend analysis, warning=FALSE, message=FALSE}
 # For trend analysis involving region (continental), income_group (i.e., high-income, low-income, middle-income countries), and decade (1980s, 1990s, 2000s, 2010s, 2020s).
 trend_continental <- incidence_grouped |>
@@ -258,6 +258,9 @@ Time series analysis is appropriate for examining how data points indexed in tim
 
 
 ### Data Preparation 
+
+To lay the groundwork for our analysis, we arrange our dataset in chronological order to observe the progression of HIV cases over time. We then standardize the case numbers, ensuring they're all in numerical form and address any missing values by replacing placeholders with zeroes. Following this, we structure the dataset in a granular fashion, with each record representing a unique combination of year, region, income group, and population subgroup. For each of these specific intersections, we calculate the mean incidence rate of HIV and the sum of cases. This methodical organization of data is designed to facilitate an in-depth analysis of HIV trends, allowing us to examine the evolution and patterns of the disease across different regions, economic strata, and demographic groups year by year.
+
 ```{r meta-data preparation, warning=FALSE}
 sorted_data <- incidence_grouped |> 
   arrange(year) |>
